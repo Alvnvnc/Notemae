@@ -1,0 +1,157 @@
+[
+  {
+    "name": "Niko — komuter citrus vetiver",
+    "text": "Pria naik KRL setiap hari, cari citrus dan vetiver untuk kantor Jakarta, budget 1,3 juta, hindari vanilla",
+    "profile": {"budget_idr": 1300000, "occasion": "office", "climate": "tropical", "gender": "men", "preferred_notes": ["citrus", "vetiver"], "avoid_notes": ["vanilla"], "limit": 3}
+  },
+  {
+    "name": "Ayu — interview iris neroli",
+    "text": "Perempuan untuk interview, suka iris dan neroli yang rapi, proyeksi rendah, maksimal 2 juta",
+    "profile": {"budget_idr": 2000000, "occasion": "interview", "gender": "women", "preferred_notes": ["iris", "neroli"], "projection_preference": "low", "limit": 3}
+  },
+  {
+    "name": "Reza — date tobacco cinnamon",
+    "text": "Cari parfum unisex untuk date malam, suka tobacco dan cinnamon, budget 3,8 juta",
+    "profile": {"budget_idr": 3800000, "occasion": "date", "preferred_notes": ["tobacco", "cinnamon"], "limit": 3}
+  },
+  {
+    "name": "Melati — pantai aquatic citrus",
+    "text": "Wanita sering ke pantai, mau aquatic citrus untuk cuaca panas, tidak suka gourmand, budget 2 juta",
+    "profile": {"budget_idr": 2000000, "occasion": "casual", "climate": "hot", "gender": "women", "preferred_families": ["aquatic", "citrus"], "avoid_notes": ["gourmand"], "limit": 3}
+  },
+  {
+    "name": "Surya — guru lavender cedar",
+    "text": "Guru pria, butuh lavender dan cedar yang tenang untuk kelas, proyeksi rendah, budget 800 ribu",
+    "profile": {"budget_idr": 800000, "occasion": "office", "gender": "men", "preferred_notes": ["lavender", "cedar"], "projection_preference": "low", "limit": 3}
+  },
+  {
+    "name": "Hana — wedding white floral",
+    "text": "Wanita untuk resepsi siang, suka white floral, ingin ketahanan tinggi, budget 3 juta",
+    "profile": {"budget_idr": 3000000, "occasion": "wedding", "climate": "tropical", "gender": "women", "preferred_families": ["white floral"], "longevity_preference": "high", "limit": 3}
+  },
+  {
+    "name": "Bagas — alternatif Bleu hemat",
+    "text": "Suka Bleu de Chanel tetapi cari alternatif kantor di bawah 1,3 juta",
+    "profile": {"budget_idr": 1300000, "occasion": "office", "gender": "men", "reference_likes": ["Bleu de Chanel"], "limit": 3},
+    "reference_like_slugs": ["bleu-de-chanel-edp"]
+  },
+  {
+    "name": "Nisa — menjauh dari La Vie Est Belle",
+    "text": "Bosan dengan La Vie Est Belle, ingin parfum wanita yang fresh untuk kantor, budget 2,8 juta",
+    "profile": {"budget_idr": 2800000, "occasion": "office", "climate": "tropical", "gender": "women", "preferred_families": ["fresh"], "reference_dislikes": ["La Vie Est Belle"], "limit": 3},
+    "reference_dislike_slugs": ["lancome-la-vie-est-belle"]
+  },
+  {
+    "name": "Aldi — gym mint marine",
+    "text": "Pria untuk gym, suka mint dan nuansa marine, maksimal 700 ribu",
+    "profile": {"budget_idr": 700000, "occasion": "gym", "climate": "hot", "gender": "men", "preferred_notes": ["mint", "marine"], "limit": 3}
+  },
+  {
+    "name": "Wulan — musk hijau harian",
+    "text": "Cari parfum wanita atau unisex untuk harian, suka musk dan green notes, budget 500 ribu",
+    "profile": {"budget_idr": 500000, "occasion": "casual", "climate": "tropical", "gender": "women", "preferred_notes": ["musk"], "preferred_families": ["green"], "limit": 3}
+  },
+  {
+    "name": "Dimas — formal incense leather",
+    "text": "Pria untuk acara formal, suka incense dan leather, hindari vanilla, budget 4 juta",
+    "profile": {"budget_idr": 4000000, "occasion": "formal", "gender": "men", "preferred_notes": ["incense", "leather"], "avoid_notes": ["vanilla"], "limit": 3}
+  },
+  {
+    "name": "Sarah — date rose vanilla",
+    "text": "Wanita untuk kencan, suka rose dan vanilla dengan proyeksi sedang, budget 2,7 juta",
+    "profile": {"budget_idr": 2700000, "occasion": "date", "gender": "women", "preferred_notes": ["rose", "vanilla"], "projection_preference": "moderate", "limit": 3}
+  },
+  {
+    "name": "Fikri — oud formal anti-manis",
+    "text": "Cari parfum oud unisex untuk acara formal, tidak suka manis, budget 6 juta",
+    "profile": {"budget_idr": 6000000, "occasion": "formal", "preferred_notes": ["oud"], "avoid_notes": ["sweet"], "limit": 3}
+  },
+  {
+    "name": "Rani — fruity party kuat",
+    "text": "Wanita untuk pesta, suka apple dan pear yang fruity, ingin proyeksi tinggi, budget 3 juta",
+    "profile": {"budget_idr": 3000000, "occasion": "party", "gender": "women", "preferred_notes": ["apple", "pear"], "preferred_families": ["fruity"], "projection_preference": "high", "limit": 3}
+  },
+  {
+    "name": "Joko — kopi tembakau santai",
+    "text": "Pria suka kopi dan tembakau untuk nongkrong, budget 3,6 juta",
+    "profile": {"budget_idr": 3600000, "occasion": "casual", "gender": "men", "preferred_notes": ["coffee", "tobacco"], "limit": 3}
+  },
+  {
+    "name": "Karin — powdery iris kantor",
+    "text": "Wanita mencari iris powdery yang lembut untuk kantor, proyeksi rendah, budget 2,2 juta",
+    "profile": {"budget_idr": 2200000, "occasion": "office", "gender": "women", "preferred_notes": ["iris"], "preferred_families": ["powdery"], "projection_preference": "low", "limit": 3}
+  },
+  {
+    "name": "Eko — citrus awet lapangan",
+    "text": "Pria kerja lapangan di cuaca panas, mau citrus yang awet, maksimal 600 ribu",
+    "profile": {"budget_idr": 600000, "occasion": "casual", "climate": "hot", "gender": "men", "preferred_families": ["citrus"], "longevity_preference": "high", "limit": 3}
+  },
+  {
+    "name": "Bella — Coco tanpa vanilla",
+    "text": "Suka karakter Coco Mademoiselle tetapi sekarang ingin menghindari vanilla, budget 3 juta",
+    "profile": {"budget_idr": 3000000, "gender": "women", "avoid_notes": ["vanilla"], "reference_likes": ["Coco Mademoiselle"], "limit": 3},
+    "reference_like_slugs": ["chanel-coco-mademoiselle"]
+  },
+  {
+    "name": "Tono — interview aromatic klasik",
+    "text": "Pria untuk wawancara kerja, suka lavender dan vetiver aromatic, budget 1,2 juta",
+    "profile": {"budget_idr": 1200000, "occasion": "interview", "gender": "men", "preferred_notes": ["lavender", "vetiver"], "preferred_families": ["aromatic"], "limit": 3}
+  },
+  {
+    "name": "Anisa — green tea skin scent",
+    "text": "Cari green tea dan musk yang minimalis, unisex, proyeksi rendah, budget 900 ribu",
+    "profile": {"budget_idr": 900000, "preferred_notes": ["tea", "musk"], "preferred_families": ["green"], "projection_preference": "low", "limit": 3}
+  },
+  {
+    "name": "Rio — club spicy amber",
+    "text": "Pria untuk clubbing, suka spicy amber dan perlu proyeksi tinggi, budget 2 juta",
+    "profile": {"budget_idr": 2000000, "occasion": "party", "gender": "men", "preferred_families": ["spicy", "amber"], "projection_preference": "high", "limit": 3}
+  },
+  {
+    "name": "Lestari — floral formal dewasa",
+    "text": "Wanita mencari rose dan jasmine elegan untuk acara formal, budget 3 juta",
+    "profile": {"budget_idr": 3000000, "occasion": "formal", "gender": "women", "preferred_notes": ["rose", "jasmine"], "preferred_families": ["floral"], "limit": 3}
+  },
+  {
+    "name": "Farhan — marine incense kantor",
+    "text": "Pria suka gabungan marine dan incense untuk kantor, budget 2,5 juta",
+    "profile": {"budget_idr": 2500000, "occasion": "office", "climate": "tropical", "gender": "men", "preferred_notes": ["marine", "incense"], "limit": 3}
+  },
+  {
+    "name": "Gita — kelapa fruity kasual",
+    "text": "Wanita suka kelapa dan buah tropis untuk santai, budget 1,5 juta",
+    "profile": {"budget_idr": 1500000, "occasion": "casual", "climate": "tropical", "gender": "women", "preferred_notes": ["coconut"], "preferred_families": ["fruity"], "limit": 3}
+  },
+  {
+    "name": "Bayu — upgrade Cool Water",
+    "text": "Biasa pakai Cool Water dan ingin upgrade yang tetap fresh aquatic, budget 2,5 juta",
+    "profile": {"budget_idr": 2500000, "gender": "men", "preferred_families": ["fresh", "aquatic"], "reference_likes": ["Cool Water"], "limit": 3},
+    "reference_like_slugs": ["davidoff-cool-water"]
+  },
+  {
+    "name": "Sekar — floral non-manis",
+    "text": "Flowerbomb terlalu manis buat saya, cari floral wanita untuk wedding, budget 3,2 juta",
+    "profile": {"budget_idr": 3200000, "occasion": "wedding", "gender": "women", "preferred_families": ["floral"], "avoid_notes": ["sweet"], "reference_dislikes": ["Flowerbomb"], "limit": 3},
+    "reference_dislike_slugs": ["viktor-rolf-flowerbomb"]
+  },
+  {
+    "name": "Iqbal — musk kantor dekat kulit",
+    "text": "Pria ingin musk unisex yang dekat kulit untuk kantor, proyeksi rendah, budget 1 juta",
+    "profile": {"budget_idr": 1000000, "occasion": "office", "gender": "men", "preferred_notes": ["musk"], "projection_preference": "low", "limit": 3}
+  },
+  {
+    "name": "Maria — gourmand kopi vanilla",
+    "text": "Wanita suka kopi dan vanilla gourmand untuk date, budget 3 juta",
+    "profile": {"budget_idr": 3000000, "occasion": "date", "gender": "women", "preferred_notes": ["coffee", "vanilla"], "preferred_families": ["gourmand"], "limit": 3}
+  },
+  {
+    "name": "Dani — outdoor woody green",
+    "text": "Pria banyak kegiatan outdoor, suka woody green untuk panas, hindari aroma manis, budget 1,5 juta",
+    "profile": {"budget_idr": 1500000, "occasion": "casual", "climate": "hot", "gender": "men", "preferred_families": ["woody", "green"], "avoid_notes": ["sweet"], "limit": 3}
+  },
+  {
+    "name": "Putra — parfum pertama serbaguna",
+    "text": "Pria cari parfum pertama yang fresh untuk kantor dan santai, budget 700 ribu",
+    "profile": {"budget_idr": 700000, "occasion": "office", "climate": "tropical", "gender": "men", "preferred_families": ["fresh"], "limit": 3}
+  }
+]

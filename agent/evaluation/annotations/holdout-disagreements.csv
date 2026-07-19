@@ -1,0 +1,87 @@
+persona_name,product_slug,relevance_a,relevance_b,adjudicated_relevance
+Aldi — gym mint marine,versace-pour-homme,1,0,0
+Aldi — gym mint marine,zara-vibrant-leather,1,0,0
+Anisa — green tea skin scent,hmns-alpha,1,0,0
+Anisa — green tea skin scent,montblanc-explorer,1,0,0
+Anisa — green tea skin scent,onix-vanilla-groove,1,0,1
+Ayu — interview iris neroli,chanel-coco-mademoiselle,1,0,0
+Ayu — interview iris neroli,dior-jadore,1,0,0
+Bagas — alternatif Bleu hemat,adidas-dynamic-pulse,0,1,1
+Bagas — alternatif Bleu hemat,armaf-club-de-nuit-intense,1,2,1
+Bagas — alternatif Bleu hemat,dior-sauvage-edt,1,0,0
+Bagas — alternatif Bleu hemat,hmns-alpha,2,3,3
+Bagas — alternatif Bleu hemat,prada-lhomme,1,0,0
+Bayu — upgrade Cool Water,hmns-alpha,2,1,1
+Bayu — upgrade Cool Water,montblanc-explorer,2,1,1
+Bayu — upgrade Cool Water,versace-pour-homme,2,1,2
+Bayu — upgrade Cool Water,zara-vibrant-leather,1,0,1
+Bella — Coco tanpa vanilla,hmns-perfume-farhampton,0,1,1
+Dani — outdoor woody green,adidas-dynamic-pulse,2,1,1
+Dani — outdoor woody green,mine-perfumery-morning-dew,3,2,2
+Dimas — formal incense leather,bleu-de-chanel-edp,2,3,2
+Eko — citrus awet lapangan,hmns-perfume-farhampton,2,1,1
+Farhan — marine incense kantor,armaf-club-de-nuit-intense,1,0,0
+Farhan — marine incense kantor,dior-sauvage-edt,1,0,0
+Fikri — oud formal anti-manis,armaf-club-de-nuit-intense,0,1,0
+Fikri — oud formal anti-manis,bleu-de-chanel-edp,1,2,1
+Fikri — oud formal anti-manis,montblanc-explorer,0,1,1
+Fikri — oud formal anti-manis,saff-co-crimson,1,2,2
+Fikri — oud formal anti-manis,tom-ford-oud-wood,0,1,0
+Fikri — oud formal anti-manis,zara-vibrant-leather,0,1,1
+Hana — wedding white floral,chanel-coco-mademoiselle,2,1,2
+Hana — wedding white floral,lancome-la-vie-est-belle,1,0,1
+Hana — wedding white floral,ysl-libre,2,1,2
+Iqbal — musk kantor dekat kulit,armaf-club-de-nuit-intense,0,1,0
+Iqbal — musk kantor dekat kulit,davidoff-cool-water,1,2,1
+Iqbal — musk kantor dekat kulit,mine-perfumery-morning-dew,2,3,3
+Iqbal — musk kantor dekat kulit,the-body-shop-white-musk,2,0,0
+Joko — kopi tembakau santai,tom-ford-tobacco-vanille,1,2,1
+Joko — kopi tembakau santai,versace-eros,0,1,1
+Karin — powdery iris kantor,gucci-bloom,1,0,0
+Maria — gourmand kopi vanilla,kayali-vanilla-29,2,3,2
+Maria — gourmand kopi vanilla,lancome-la-vie-est-belle,2,3,3
+Maria — gourmand kopi vanilla,onix-vanilla-groove,2,3,2
+Maria — gourmand kopi vanilla,viktor-rolf-flowerbomb,1,2,1
+Maria — gourmand kopi vanilla,ysl-libre,1,2,1
+Melati — pantai aquatic citrus,ck-one,2,3,2
+Melati — pantai aquatic citrus,mine-perfumery-morning-dew,2,3,2
+Niko — komuter citrus vetiver,hmns-perfume-farhampton,1,2,2
+Niko — komuter citrus vetiver,prada-lhomme,1,0,0
+Nisa — menjauh dari La Vie Est Belle,chanel-coco-mademoiselle,2,1,1
+Nisa — menjauh dari La Vie Est Belle,the-body-shop-white-musk,2,1,2
+Putra — parfum pertama serbaguna,adidas-dynamic-pulse,2,1,1
+Putra — parfum pertama serbaguna,ck-one,2,3,3
+Putra — parfum pertama serbaguna,mine-perfumery-morning-dew,2,3,3
+Rani — fruity party kuat,gucci-bloom,0,1,0
+Rani — fruity party kuat,kayali-vanilla-29,0,1,1
+Rani — fruity party kuat,lancome-la-vie-est-belle,1,2,1
+Rani — fruity party kuat,saff-co-crimson,0,1,1
+Rani — fruity party kuat,viktor-rolf-flowerbomb,1,2,2
+Rani — fruity party kuat,ysl-black-opium,1,2,1
+Rani — fruity party kuat,ysl-libre,1,2,2
+Reza — date tobacco cinnamon,le-labo-santal-33,1,0,1
+Reza — date tobacco cinnamon,maison-margiela-jazz-club,2,3,2
+Reza — date tobacco cinnamon,tom-ford-oud-wood,1,0,0
+Rio — club spicy amber,acqua-di-gio-profumo,1,0,0
+Rio — club spicy amber,armaf-club-de-nuit-intense,2,1,2
+Rio — club spicy amber,azzaro-wanted-by-night,3,2,3
+Rio — club spicy amber,bleu-de-chanel-edp,1,0,1
+Rio — club spicy amber,dior-sauvage-edt,3,2,3
+Rio — club spicy amber,jean-paul-gaultier-ultra-male,3,2,2
+Rio — club spicy amber,kayali-vanilla-29,1,0,0
+Rio — club spicy amber,prada-lhomme,0,1,0
+Rio — club spicy amber,versace-eros,2,1,1
+Rio — club spicy amber,zara-vibrant-leather,1,0,0
+Sarah — date rose vanilla,chloe-edp,1,2,2
+Sarah — date rose vanilla,lancome-la-vie-est-belle,1,2,2
+Sarah — date rose vanilla,saff-co-crimson,2,3,2
+Sarah — date rose vanilla,viktor-rolf-flowerbomb,1,2,2
+Sarah — date rose vanilla,ysl-black-opium,1,2,2
+Sarah — date rose vanilla,ysl-libre,1,2,1
+Sekar — floral non-manis,dolce-gabbana-light-blue,1,0,0
+Sekar — floral non-manis,saff-co-crimson,2,1,2
+Surya — guru lavender cedar,versace-pour-homme,2,1,1
+Tono — interview aromatic klasik,hmns-alpha,3,2,2
+Tono — interview aromatic klasik,versace-pour-homme,2,1,1
+Wulan — musk hijau harian,hmns-perfume-farhampton,1,2,2
+Wulan — musk hijau harian,the-body-shop-white-musk,2,3,2

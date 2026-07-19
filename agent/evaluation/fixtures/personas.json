@@ -1,0 +1,186 @@
+[
+  {
+    "name": "Andi — fresh kantor hemat",
+    "text": "Saya pria, kerja kantoran di Jakarta, budget 1,2 juta, suka citrus dan cedar, tidak suka manis",
+    "profile": {"budget_idr": 1200000, "occasion": "office", "climate": "tropical", "gender": "men", "preferred_notes": ["citrus", "cedar"], "avoid_notes": ["manis"], "limit": 3},
+    "relevant": {"perfect": ["versace-pour-homme", "montblanc-explorer"], "good": ["hmns-alpha", "hmns-perfume-farhampton", "armaf-club-de-nuit-intense"], "acceptable": ["davidoff-cool-water", "ck-one", "adidas-dynamic-pulse"]}
+  },
+  {
+    "name": "Sari — floral kantor lembut",
+    "text": "Wanita, untuk kantor, budget 2,5 juta, suka rose dan musk yang floral lembut, hindari oud",
+    "profile": {"budget_idr": 2500000, "occasion": "office", "climate": "tropical", "gender": "women", "preferred_notes": ["rose", "musk"], "preferred_families": ["floral"], "avoid_notes": ["oud"], "limit": 3},
+    "relevant": {"perfect": ["chloe-edp"], "good": ["dior-jadore", "gucci-bloom"], "acceptable": ["ysl-libre", "the-body-shop-white-musk"]}
+  },
+  {
+    "name": "Budi — date night manis",
+    "text": "Pria, buat kencan malam, budget 2 juta, suka vanilla dan tonka yang gourmand",
+    "profile": {"budget_idr": 2000000, "occasion": "date", "gender": "men", "preferred_notes": ["vanilla", "tonka"], "preferred_families": ["gourmand"], "limit": 3},
+    "relevant": {"perfect": ["versace-eros", "jean-paul-gaultier-ultra-male"], "good": ["azzaro-wanted-by-night", "paco-rabanne-one-million"], "acceptable": ["onix-vanilla-groove"]}
+  },
+  {
+    "name": "Maya — mirip Coco Mademoiselle",
+    "text": "Aku suka Coco Mademoiselle, cari yang mirip tapi beda, budget 3 juta",
+    "profile": {"budget_idr": 3000000, "gender": "women", "reference_likes": ["Coco Mademoiselle"], "limit": 3},
+    "reference_like_slugs": ["chanel-coco-mademoiselle"],
+    "relevant": {"perfect": ["viktor-rolf-flowerbomb", "lancome-la-vie-est-belle"], "good": ["ysl-libre", "dior-jadore"], "acceptable": ["chloe-edp"]}
+  },
+  {
+    "name": "Rizky — gym mahasiswa",
+    "text": "Mahasiswa, buat gym dan kuliah, maksimal 500 ribu, yang fresh saja",
+    "profile": {"budget_idr": 500000, "occasion": "gym", "climate": "tropical", "gender": "men", "preferred_families": ["fresh"], "limit": 3},
+    "relevant": {"perfect": ["adidas-dynamic-pulse"], "good": ["davidoff-cool-water", "armaf-club-de-nuit-intense"], "acceptable": ["hmns-perfume-farhampton", "mine-perfumery-morning-dew"]}
+  },
+  {
+    "name": "Pak Hendra — wedding woody mewah",
+    "text": "Untuk resepsi pernikahan, budget 5 juta, suka oud dan sandalwood yang woody",
+    "profile": {"budget_idr": 5000000, "occasion": "wedding", "gender": "men", "preferred_notes": ["oud", "sandalwood"], "preferred_families": ["woody"], "limit": 3},
+    "relevant": {"perfect": ["tom-ford-oud-wood"], "good": ["le-labo-santal-33", "bleu-de-chanel-edp"], "acceptable": ["montblanc-explorer", "azzaro-wanted-by-night"]}
+  },
+  {
+    "name": "Dewi — vanilla anti-floral",
+    "text": "Wanita, suka vanilla banget tapi tidak suka bunga-bungaan, budget 2,8 juta",
+    "profile": {"budget_idr": 2800000, "gender": "women", "preferred_notes": ["vanilla"], "avoid_notes": ["bunga"], "limit": 3},
+    "relevant": {"perfect": ["kayali-vanilla-29"], "good": ["onix-vanilla-groove"], "acceptable": []}
+  },
+  {
+    "name": "Yoga — bosan Sauvage",
+    "text": "Sudah bosan dengan Dior Sauvage, mau yang beda tapi tetap fresh untuk kantor, budget 2,5 juta",
+    "profile": {"budget_idr": 2500000, "occasion": "office", "climate": "tropical", "gender": "men", "preferred_families": ["fresh"], "reference_dislikes": ["Dior Sauvage"], "limit": 3},
+    "reference_dislike_slugs": ["dior-sauvage-edt"],
+    "relevant": {"perfect": ["bleu-de-chanel-edp", "prada-lhomme"], "good": ["acqua-di-gio-profumo", "ysl-y-edp"], "acceptable": ["versace-pour-homme", "montblanc-explorer"]}
+  },
+  {
+    "name": "Intan — pesta malam bold",
+    "text": "Wanita, buat pesta malam, budget 3,5 juta, suka yang manis hangat dan tahan lama, proyeksi tinggi",
+    "profile": {"budget_idr": 3500000, "occasion": "party", "gender": "women", "preferred_families": ["amber", "gourmand"], "projection_preference": "high", "limit": 3},
+    "relevant": {"perfect": ["lancome-la-vie-est-belle", "viktor-rolf-flowerbomb"], "good": ["kayali-vanilla-29", "ysl-libre", "ysl-black-opium"], "acceptable": ["maison-margiela-jazz-club"]}
+  },
+  {
+    "name": "Fajar — kolektor suka Aventus",
+    "text": "Saya suka Creed Aventus, cari alternatif atau yang sekarakter, budget 7 juta",
+    "profile": {"budget_idr": 7000000, "gender": "men", "reference_likes": ["Creed Aventus"], "limit": 3},
+    "reference_like_slugs": ["creed-aventus"],
+    "relevant": {"perfect": ["armaf-club-de-nuit-intense"], "good": ["montblanc-explorer"], "acceptable": ["bleu-de-chanel-edp", "ysl-y-edp"]}
+  },
+  {
+    "name": "Citra — daily lembut tidak menyengat",
+    "text": "Wanita berhijab, untuk harian, budget 800 ribu, yang lembut tidak menyengat, suka musk",
+    "profile": {"budget_idr": 800000, "occasion": "casual", "climate": "tropical", "gender": "women", "preferred_notes": ["musk"], "projection_preference": "low", "limit": 3},
+    "relevant": {"perfect": ["the-body-shop-white-musk"], "good": ["mine-perfumery-morning-dew", "ck-one"], "acceptable": ["saff-co-crimson"]}
+  },
+  {
+    "name": "Deni — kopi dan tembakau",
+    "text": "Cari yang unik, suka aroma kopi dan tembakau, unisex, budget 4 juta",
+    "profile": {"budget_idr": 4000000, "preferred_notes": ["kopi", "tembakau"], "limit": 3},
+    "relevant": {"perfect": ["maison-margiela-jazz-club"], "good": ["azzaro-wanted-by-night", "ysl-black-opium"], "acceptable": ["tom-ford-tobacco-vanille"]}
+  },
+  {
+    "name": "Tante Rossa — kondangan elegan",
+    "text": "Untuk kondangan dan acara keluarga, wanita, budget 3 juta, suka white floral yang elegan, maunya tahan lama",
+    "profile": {"budget_idr": 3000000, "occasion": "wedding", "gender": "women", "preferred_families": ["white floral"], "longevity_preference": "high", "limit": 3},
+    "relevant": {"perfect": ["gucci-bloom", "dior-jadore"], "good": ["viktor-rolf-flowerbomb"], "acceptable": ["ysl-libre", "chanel-coco-mademoiselle"]}
+  },
+  {
+    "name": "Bang Jaka — ojol panas-panasan",
+    "text": "Kerja di jalan seharian panas-panasan, pria, maksimal 300 ribu, yang penting awet",
+    "profile": {"budget_idr": 300000, "climate": "hot", "occasion": "casual", "gender": "men", "longevity_preference": "high", "limit": 3},
+    "relevant": {"perfect": [], "good": ["saff-co-crimson", "onix-vanilla-groove"], "acceptable": ["mine-perfumery-morning-dew", "adidas-dynamic-pulse"]}
+  },
+  {
+    "name": "Nadia — aquatic perenang",
+    "text": "Suka nuansa laut dan air, wanita tapi unisex juga boleh, budget 700 ribu",
+    "profile": {"budget_idr": 700000, "gender": "women", "preferred_families": ["aquatic"], "limit": 3},
+    "relevant": {"perfect": ["hmns-perfume-farhampton"], "good": ["ck-one", "mine-perfumery-morning-dew"], "acceptable": ["the-body-shop-white-musk"]}
+  },
+  {
+    "name": "Om Bram — bos meeting formal",
+    "text": "Direktur, sering meeting formal, budget 10 juta, suka woody berkelas, tidak suka manis",
+    "profile": {"budget_idr": 10000000, "occasion": "formal", "gender": "men", "preferred_families": ["woody"], "avoid_notes": ["manis"], "limit": 3},
+    "relevant": {"perfect": ["creed-aventus", "bleu-de-chanel-edp"], "good": ["le-labo-santal-33", "prada-lhomme", "acqua-di-gio-profumo"], "acceptable": ["montblanc-explorer"]}
+  },
+  {
+    "name": "Lia — kado pacar suka manis",
+    "text": "Cari kado buat pacar cowok, dia suka aroma manis vanilla tapi jangan yang menyengat banget, budget 1,5 juta",
+    "profile": {"budget_idr": 1500000, "gender": "men", "preferred_notes": ["vanilla"], "projection_preference": "moderate", "limit": 3},
+    "relevant": {"perfect": ["versace-eros"], "good": ["onix-vanilla-groove", "paco-rabanne-one-million"], "acceptable": []}
+  },
+  {
+    "name": "Raka — barbershop leather",
+    "text": "Suka vibe barbershop klasik, leather dan kayu, pria, budget 600 ribu",
+    "profile": {"budget_idr": 600000, "gender": "men", "preferred_notes": ["leather", "cedar"], "limit": 3},
+    "relevant": {"perfect": ["zara-vibrant-leather"], "good": ["armaf-club-de-nuit-intense"], "acceptable": ["hmns-alpha"]}
+  },
+  {
+    "name": "Bu Woro — pengajian powdery",
+    "text": "Ibu 50 tahun untuk pengajian dan arisan, yang lembut powdery tidak menyengat, budget 1 juta",
+    "profile": {"budget_idr": 1000000, "gender": "women", "preferred_families": ["powdery"], "projection_preference": "low", "limit": 3},
+    "relevant": {"perfect": [], "good": ["the-body-shop-white-musk"], "acceptable": ["mine-perfumery-morning-dew", "ck-one"]}
+  },
+  {
+    "name": "Kevin — clubbing Jakarta",
+    "text": "Buat clubbing dan party malam, pria, budget 2 juta, harus kerasa se-ruangan, proyeksi tinggi",
+    "profile": {"budget_idr": 2000000, "occasion": "party", "gender": "men", "projection_preference": "high", "limit": 3},
+    "relevant": {"perfect": ["armaf-club-de-nuit-intense", "jean-paul-gaultier-ultra-male"], "good": ["versace-eros", "dior-sauvage-edt", "paco-rabanne-one-million"], "acceptable": ["azzaro-wanted-by-night"]}
+  },
+  {
+    "name": "Sinta — upgrade dari Light Blue",
+    "text": "Selama ini pakai Light Blue dan suka, pengen upgrade yang sejenis, wanita, budget 2,5 juta",
+    "profile": {"budget_idr": 2500000, "gender": "women", "reference_likes": ["Light Blue"], "limit": 3},
+    "reference_like_slugs": ["dolce-gabbana-light-blue"],
+    "relevant": {"perfect": [], "good": ["ck-one", "hmns-perfume-farhampton", "mine-perfumery-morning-dew"], "acceptable": ["chloe-edp"]}
+  },
+  {
+    "name": "Arif — incense amber",
+    "text": "Suka aroma dupa, kemenyan, dan amber yang dalam, pria, budget 4 juta",
+    "profile": {"budget_idr": 4000000, "gender": "men", "preferred_notes": ["kemenyan", "amber"], "limit": 3},
+    "relevant": {"perfect": ["acqua-di-gio-profumo", "bleu-de-chanel-edp"], "good": ["hmns-alpha"], "acceptable": ["saff-co-crimson", "ysl-y-edp"]}
+  },
+  {
+    "name": "Mega — fruity anti-floral",
+    "text": "Suka aroma buah segar, tapi tidak suka bunga sama sekali, wanita, budget 1,5 juta",
+    "profile": {"budget_idr": 1500000, "gender": "women", "preferred_families": ["fruity"], "avoid_notes": ["bunga"], "limit": 3},
+    "relevant": {"perfect": ["dolce-gabbana-light-blue"], "good": [], "acceptable": ["onix-vanilla-groove", "mine-perfumery-morning-dew"]}
+  },
+  {
+    "name": "Pak Darto — klasik lavender",
+    "text": "Pensiunan, suka aroma klasik lavender yang rapi, budget 900 ribu",
+    "profile": {"budget_idr": 900000, "gender": "men", "preferred_notes": ["lavender"], "limit": 3},
+    "relevant": {"perfect": ["davidoff-cool-water"], "good": ["hmns-alpha"], "acceptable": []}
+  },
+  {
+    "name": "Vina — lapangan panas anti-manis",
+    "text": "Kerja lapangan panas-panasan, wanita, suka citrus segar, jangan vanilla, budget 1 juta",
+    "profile": {"budget_idr": 1000000, "climate": "hot", "gender": "women", "preferred_notes": ["citrus"], "avoid_notes": ["vanilla"], "limit": 3},
+    "relevant": {"perfect": ["ck-one"], "good": ["hmns-perfume-farhampton", "mine-perfumery-morning-dew"], "acceptable": []}
+  },
+  {
+    "name": "Rendi — coffee shop aesthetic",
+    "text": "Anak senja, suka aroma kopi, unisex, buat nongkrong santai, budget 3 juta",
+    "profile": {"budget_idr": 3000000, "occasion": "casual", "preferred_notes": ["kopi"], "limit": 3},
+    "relevant": {"perfect": ["ysl-black-opium"], "good": ["maison-margiela-jazz-club"], "acceptable": ["onix-vanilla-groove", "kayali-vanilla-29"]}
+  },
+  {
+    "name": "Tya — skin scent minimalis",
+    "text": "Suka skin scent musk lembut yang nempel di kulit, unisex, jangan menyengat, budget 2 juta",
+    "profile": {"budget_idr": 2000000, "preferred_notes": ["musk"], "projection_preference": "low", "limit": 3},
+    "relevant": {"perfect": ["the-body-shop-white-musk"], "good": ["ck-one", "mine-perfumery-morning-dew"], "acceptable": ["hmns-perfume-farhampton"]}
+  },
+  {
+    "name": "Galih — oud leather gelap",
+    "text": "Anak band metal, suka oud dan leather yang gelap misterius, pria, budget 6 juta",
+    "profile": {"budget_idr": 6000000, "gender": "men", "preferred_notes": ["oud", "leather"], "limit": 3},
+    "relevant": {"perfect": ["tom-ford-oud-wood"], "good": ["le-labo-santal-33", "zara-vibrant-leather"], "acceptable": ["azzaro-wanted-by-night", "paco-rabanne-one-million"]}
+  },
+  {
+    "name": "Putri — first date aman",
+    "text": "First date, wanita, mau yang aman tapi memorable, floral atau manis lembut, budget 1,8 juta",
+    "profile": {"budget_idr": 1800000, "occasion": "date", "gender": "women", "preferred_families": ["floral", "gourmand"], "limit": 3},
+    "relevant": {"perfect": ["saff-co-crimson"], "good": ["onix-vanilla-groove", "dolce-gabbana-light-blue"], "acceptable": ["the-body-shop-white-musk"]}
+  },
+  {
+    "name": "Haris — interview pertama",
+    "text": "Fresh graduate mau interview kerja pertama, pria, budget 500 ribu, yang aman profesional",
+    "profile": {"budget_idr": 500000, "occasion": "interview", "gender": "men", "preferred_families": ["fresh"], "limit": 3},
+    "relevant": {"perfect": [], "good": ["hmns-alpha", "hmns-perfume-farhampton", "davidoff-cool-water"], "acceptable": ["mine-perfumery-morning-dew", "zara-vibrant-leather"]}
+  }
+]

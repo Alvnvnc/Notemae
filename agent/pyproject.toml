@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scentsphere-agent"
+version = "0.1.0"
+description = "Grounded AI recommendation service for ScentSphere"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "openai>=1.60,<2",
+  "pydantic-settings>=2.6,<3",
+  "uvicorn[standard]>=0.32,<1",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
