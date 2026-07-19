@@ -1,0 +1,21 @@
+{
+  "records": [
+    {
+      "source_name": "Approved fragrance demonstrator dataset",
+      "source_type": "public_dataset",
+      "source_url": "https://example.com/approved-dataset-license",
+      "terms_confirmed": true,
+      "brand": "Example House",
+      "name": "Citrus Iris",
+      "description": "A demonstrator record for the ingestion contract.",
+      "gender": "unisex",
+      "notes": ["Citrus", "Iris", "Cedar"],
+      "occasions": ["Office"],
+      "climates": ["Tropical"],
+      "price_idr": 750000,
+      "rating": 4.2,
+      "longevity_score": 3.5,
+      "projection_score": 3.0
+    }
+  ]
+}
