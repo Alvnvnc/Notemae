@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: scentsphere
+      POSTGRES_USER: scent
+      POSTGRES_PASSWORD: scent
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+      - ./database/seed_more_catalog.sql:/docker-entrypoint-initdb.d/002-seed-more-catalog.sql:ro
+      - ./database/seed_dupe_relationships.sql:/docker-entrypoint-initdb.d/003-seed-dupe-relationships.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scent -d scentsphere"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://scent:scent@postgres:5432/scentsphere
+      AGENT_URL: http://agent:8001
+      SERVICE_SHARED_SECRET: ${SERVICE_SHARED_SECRET:-change-me-before-production}
+      FRONTEND_ORIGINS: http://localhost:4173
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  agent:
+    build: ./agent
+    restart: unless-stopped
+    environment:
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      QWEN_BASE_URL: ${QWEN_BASE_URL:-https://dashscope-intl.aliyuncs.com/compatible-mode/v1}
+      QWEN_MODEL: ${QWEN_MODEL:-qwen3.7-plus}
+      QWEN_PROFILE_MODEL: ${QWEN_PROFILE_MODEL:-}
+      QWEN_EMBED_MODEL: ${QWEN_EMBED_MODEL:-text-embedding-v4}
+      QWEN_EMBEDDING_DIMENSIONS: ${QWEN_EMBEDDING_DIMENSIONS:-1024}
+      QWEN_THINKING: ${QWEN_THINKING:-1}
+      QWEN_RERANK_ENABLED: ${QWEN_RERANK_ENABLED:-1}
+    ports:
+      - "8001:8001"
+
+  scraping:
+    build: ./scraping
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8000
+      SERVICE_SHARED_SECRET: ${SERVICE_SHARED_SECRET:-change-me-before-production}
+      AUTO_INGEST_ENABLED: ${AUTO_INGEST_ENABLED:-true}
+      AUTO_INGEST_INTERVAL_SECONDS: ${AUTO_INGEST_INTERVAL_SECONDS:-21600}
+      AUTO_INGEST_RETRY_SECONDS: ${AUTO_INGEST_RETRY_SECONDS:-300}
+      AUTO_INGEST_STARTUP_DELAY_SECONDS: ${AUTO_INGEST_STARTUP_DELAY_SECONDS:-15}
+      INGESTION_STATE_PATH: /data/ingestion-state.json
+      OBF_BOOTSTRAP_FILES: ${OBF_BOOTSTRAP_FILES:-14}
+      OBF_MAX_FILES_PER_RUN: ${OBF_MAX_FILES_PER_RUN:-2}
+      OBF_MAX_RECORDS_PER_RUN: ${OBF_MAX_RECORDS_PER_RUN:-500}
+      SOURCE_USER_AGENT: ${SOURCE_USER_AGENT:-ScentSphere/0.1 (Open Beauty Facts ODbL delta importer)}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      QWEN_BASE_URL: ${QWEN_BASE_URL:-https://dashscope-intl.aliyuncs.com/compatible-mode/v1}
+      QWEN_MODEL: ${QWEN_MODEL:-qwen3.7-plus}
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+      ENRICHMENT_MAX_RECORDS_PER_RUN: ${ENRICHMENT_MAX_RECORDS_PER_RUN:-60}
+      ENRICHMENT_MIN_CONFIDENCE: ${ENRICHMENT_MIN_CONFIDENCE:-0.7}
+    ports:
+      - "8002:8002"
+    depends_on:
+      backend:
+        condition: service_started
+    volumes:
+      - scraping_data:/data
+
+  fe:
+    build: ./fe
+    restart: unless-stopped
+    ports:
+      - "4173:80"
+    depends_on:
+      backend:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  scraping_data:

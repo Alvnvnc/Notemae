@@ -1,0 +1,28 @@
+# Secrets & environment
+.env
+*.secret
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Node / frontend build
+node_modules/
+dist/
+
+# Local agent / editor tooling
+.claude/
+.agents/
+skills-lock.json
+
+# Backups & scratch artifacts
+*.bak
+image.png
+
+# OS
+.DS_Store
