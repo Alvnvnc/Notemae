@@ -9,6 +9,7 @@ import {
   renderMarkdown
 } from "../format.js";
 import { riseLines, countUp, growBars, pyramidReveal, refreshTriggers } from "../motion.js";
+import { t } from "../i18n.js";
 
 function pyramidHtml(f) {
   const tiers = splitPyramid(f.notes);
@@ -16,7 +17,7 @@ function pyramidHtml(f) {
     if (!(f.notes || []).length) return "";
     return `
     <div data-reveal>
-      <h2 class="h-sect">Komposisi aroma.</h2>
+      <h2 class="h-sect">${t("detail.title")}</h2>
       <div class="detail__tags" style="margin-top:18px">
         ${f.notes.map((n) => `<span class="tag" style="text-transform:capitalize">${escapeHtml(n)}</span>`).join("")}
       </div>
@@ -29,13 +30,13 @@ function pyramidHtml(f) {
     </div>`;
   return `
   <div>
-    <h2 class="h-sect" data-reveal>Piramida notes.</h2>
+    <h2 class="h-sect" data-reveal>${t("detail.pyramid")}</h2>
     <div class="pyramid">
       ${tier("top", "Top", tiers.top)}
       ${tier("heart", "Heart", tiers.heart)}
       ${tier("base", "Base", tiers.base)}
     </div>
-    <p class="pyramid__hint">Pembagian tier diperkirakan dari urutan data notes di katalog.</p>
+    <p class="pyramid__hint">${t("detail.pyramidHint")}</p>
   </div>`;
 }
 
@@ -50,34 +51,34 @@ function dupeRowHtml(original, rel) {
       <h3 class="dupe__name"><a href="/parfum/${encodeURIComponent(d.slug)}">${escapeHtml(displayName(d.brand, d.name))}</a></h3>
       <p class="dupe__claim">${escapeHtml(relationClaim(rel.relation, rel.confidence, displayName(original.brand, original.name)))}</p>
       <div class="dupe__facts">
-        <span class="dupe__fact">Relasi <strong>${escapeHtml(relationLabel(rel.relation))}</strong></span>
-        <span class="dupe__fact">Notes sama <strong>${ov.shared.length} dari ${oriTotal}</strong></span>
-        <span class="dupe__fact">Harga <strong>${escapeHtml(rupiah(d.price_idr))}</strong></span>
-        ${save ? `<span class="dupe__fact">Hemat <strong class="save">${escapeHtml(rupiah(save.diff))} (${save.pct}%)</strong></span>` : ""}
+        <span class="dupe__fact">${t("relation.similar")} <strong>${escapeHtml(relationLabel(rel.relation))}</strong></span>
+        <span class="dupe__fact">${t("common.notes")} <strong>${ov.shared.length} / ${oriTotal}</strong></span>
+        <span class="dupe__fact">${t("detail.price")} <strong>${escapeHtml(rupiah(d.price_idr))}</strong></span>
+        ${save ? `<span class="dupe__fact">${t("common.savings")} <strong class="save">${escapeHtml(rupiah(save.diff))} (${save.pct}%)</strong></span>` : ""}
       </div>
     </div>
     <div class="dupe__score">
       <strong data-count="${ov.pct}">0%</strong>
-      <span>kemiripan notes</span>
+      <span>${t("common.similarity")}</span>
     </div>
     <div class="dupe__cta">
-      <a class="btn" href="/bandingkan/${encodeURIComponent(original.slug)}/vs/${encodeURIComponent(d.slug)}">Bandingkan berdampingan</a>
+      <a class="btn" href="/bandingkan/${encodeURIComponent(original.slug)}/vs/${encodeURIComponent(d.slug)}">${t("common.compare")}</a>
     </div>
   </article>`;
 }
 
 function notFound(slug) {
   return {
-    title: "Tidak ditemukan",
-    desc: "Parfum tidak ditemukan di katalog.",
-    curtainWord: "Katalog",
+    title: t("errors.notFound"),
+    desc: t("errors.notFound"),
+    curtainWord: t("nav.catalog"),
     stage: false,
     html: `
       <section class="detail sect shell">
         <div class="empty">
-          <p class="h-sect">Parfum tidak ditemukan.</p>
-          <p>"${escapeHtml(slug)}" tidak ada di katalog. Mungkin tautannya sudah berubah.</p>
-          <a class="btn" href="/katalog">Kembali ke katalog</a>
+          <p class="h-sect">${t("errors.notFound")}</p>
+          <p>${escapeHtml(t("errors.notFoundHint", { slug }))}</p>
+          <a class="btn" href="/katalog">${t("common.backCatalog")}</a>
         </div>
       </section>`
   };
@@ -102,7 +103,7 @@ export async function detailView({ slug }) {
 
   const tags = [
     genderLabel(f.gender),
-    f.release_year ? `Rilis ${f.release_year}` : "",
+    f.release_year ? t("detail.release", { year: f.release_year }) : "",
     ...(f.occasions || []).map(occasionLabel),
     ...(f.climates || []).map(climateLabel)
   ].filter(Boolean);
@@ -112,7 +113,7 @@ export async function detailView({ slug }) {
 
   const html = `
   <article class="detail sect shell">
-    <a class="crumb" href="/katalog">‹ Kembali ke katalog</a>
+    <a class="crumb" href="/katalog">‹ ${t("common.backCatalog")}</a>
 
     <header class="detail__head">
       <p class="detail__brand">${escapeHtml(f.brand)}</p>
@@ -124,26 +125,26 @@ export async function detailView({ slug }) {
     <div class="detail__grid">
       <aside class="detail__aside">
         <div class="pricecard" data-reveal>
-          <p class="pricecard__label">Kisaran harga</p>
+          <p class="pricecard__label">${t("detail.price")}</p>
           <p class="pricecard__value">${escapeHtml(rupiah(f.price_idr))}</p>
-          ${f.rating ? `<p class="pricecard__rating">Rating komunitas ★ ${Number(f.rating).toFixed(1)}</p>` : ""}
+          ${f.rating ? `<p class="pricecard__rating">${t("common.rating")} ★ ${Number(f.rating).toFixed(1)}</p>` : ""}
         </div>
         ${f.longevity_score || f.projection_score ? `
         <div class="perf" data-reveal>
           ${f.longevity_score ? `
           <div class="perf__row">
-            <div class="perf__head"><span>Ketahanan</span><strong>${Number(f.longevity_score).toFixed(1)} / 5</strong></div>
+            <div class="perf__head"><span>${t("detail.longevity")}</span><strong>${Number(f.longevity_score).toFixed(1)} / 5</strong></div>
             <div class="perf__bar" data-scale="${(Number(f.longevity_score) / 5).toFixed(2)}"></div>
           </div>` : ""}
           ${f.projection_score ? `
           <div class="perf__row">
-            <div class="perf__head"><span>Proyeksi</span><strong>${Number(f.projection_score).toFixed(1)} / 5</strong></div>
+            <div class="perf__head"><span>${t("detail.projection")}</span><strong>${Number(f.projection_score).toFixed(1)} / 5</strong></div>
             <div class="perf__bar" data-scale="${(Number(f.projection_score) / 5).toFixed(2)}"></div>
           </div>` : ""}
         </div>` : ""}
         <p class="detail__source" data-reveal>
-          Data dari sumber ${escapeHtml(String(f.source_type || "katalog").replace(/_/g, " "))}.
-          ${f.source_url ? `<a href="${escapeHtml(f.source_url)}" target="_blank" rel="noopener">Lihat sumber</a>` : ""}
+          ${t("common.source")}: ${escapeHtml(String(f.source_type || "catalog").replace(/_/g, " "))}.
+          ${f.source_url ? `<a href="${escapeHtml(f.source_url)}" target="_blank" rel="noopener">${t("common.viewSource")}</a>` : ""}
         </p>
       </aside>
 
@@ -152,23 +153,23 @@ export async function detailView({ slug }) {
 
         <section class="dupes" aria-labelledby="dupes-title">
           <div class="dupes__head">
-            <h2 class="h-sect" id="dupes-title" data-reveal>Dupe dan alternatifnya.</h2>
+            <h2 class="h-sect" id="dupes-title" data-reveal>${t("detail.dupes")}</h2>
             <p class="status" data-reveal>${
               sortedDupes.length
-                ? `${sortedDupes.length} alternatif terkurasi, diurutkan dari konsensus tertinggi.`
-                : "Belum ada dupe terkurasi untuk parfum ini."
+                ? t("detail.sorted", { count: sortedDupes.length })
+                : t("detail.noDupes")
             }</p>
           </div>
           <div id="dupe-list">
             ${sortedDupes.map((rel) => dupeRowHtml(f, rel)).join("")}
           </div>
           ${!sortedDupes.length && similar.length ? `
-            <p class="status">Sebagai gantinya, lihat parfum dengan profil aroma serupa di bawah.</p>` : ""}
+            <p class="status">${t("relation.similar")}: ${t("compare.disclaimer")}</p>` : ""}
 
           ${hasAnyRelation ? `
           <div class="explain" id="explain">
             <button class="btn btn--ghost" id="explain-btn" type="button">
-              <span>Minta ulasan AI</span><span class="spin" aria-hidden="true"></span>
+              <span>${t("detail.ai")}</span><span class="spin" aria-hidden="true"></span>
             </button>
             <p class="status" id="explain-status" role="status"></p>
             <div class="explain__body" id="explain-body"></div>
@@ -179,15 +180,15 @@ export async function detailView({ slug }) {
 
         ${originalOf.length ? `
         <section class="similar" aria-labelledby="ori-title">
-          <h2 class="h-sect" id="ori-title" data-reveal>Parfum acuannya.</h2>
-          <p class="status" data-reveal>Parfum ini dikurasi sebagai alternatif dari:</p>
+          <h2 class="h-sect" id="ori-title" data-reveal>${t("detail.dupes")}</h2>
+          <p class="status" data-reveal>${t("role.alternative")}:</p>
           <div class="similar__list">
             ${originalOf.map((rel) => {
               const o = rel.fragrance;
               return `<div class="similar__row">
                 <a href="/parfum/${encodeURIComponent(o.slug)}">${escapeHtml(displayName(o.brand, o.name))}</a>
                 <span class="brand">${escapeHtml(relationLabel(rel.relation))}</span>
-                <a class="sim" href="/bandingkan/${encodeURIComponent(o.slug)}/vs/${encodeURIComponent(f.slug)}">Bandingkan ›</a>
+                <a class="sim" href="/bandingkan/${encodeURIComponent(o.slug)}/vs/${encodeURIComponent(f.slug)}">${t("common.compare")} ›</a>
               </div>`;
             }).join("")}
           </div>
@@ -195,13 +196,13 @@ export async function detailView({ slug }) {
 
         ${flankers.length ? `
         <section class="similar" aria-labelledby="flank-title">
-          <h2 class="h-sect" id="flank-title" data-reveal>Satu lini rilisan.</h2>
+          <h2 class="h-sect" id="flank-title" data-reveal>${t("relation.flanker_of")}</h2>
           <div class="similar__list">
             ${flankers.map((rel) => {
               const o = rel.fragrance;
               return `<div class="similar__row">
                 <a href="/parfum/${encodeURIComponent(o.slug)}">${escapeHtml(displayName(o.brand, o.name))}</a>
-                <span class="brand">Flanker</span>
+                <span class="brand">${t("relation.flanker_of")}</span>
               </div>`;
             }).join("")}
           </div>
@@ -209,15 +210,15 @@ export async function detailView({ slug }) {
 
         ${similar.length ? `
         <section class="similar" aria-labelledby="similar-title">
-          <h2 class="h-sect" id="similar-title" data-reveal>Profil aroma serupa.</h2>
-          <p class="status" data-reveal>Kemiripan profil dihitung dari data katalog. Ini bukan klaim dupe.</p>
+          <h2 class="h-sect" id="similar-title" data-reveal>${t("relation.similar")} profile.</h2>
+          <p class="status" data-reveal>${t("compare.disclaimer")}</p>
           <div class="similar__list">
             ${similar.map((s) => `
               <div class="similar__row">
                 <a href="/parfum/${encodeURIComponent(s.slug)}">${escapeHtml(displayName(s.brand, s.name))}</a>
                 <span class="brand">${escapeHtml(s.brand)}</span>
                 ${typeof s.semantic_similarity === "number"
-                  ? `<span class="sim">profil ${Math.round(s.semantic_similarity * 100)}% mirip</span>` : ""}
+                  ? `<span class="sim">${Math.round(s.semantic_similarity * 100)}% ${t("common.similarity")}</span>` : ""}
               </div>`).join("")}
           </div>
         </section>` : ""}
@@ -245,19 +246,19 @@ export async function detailView({ slug }) {
         const body = root.querySelector("#explain-body");
         btn.addEventListener("click", async () => {
           btn.setAttribute("data-busy", "true");
-          statusEl.textContent = "AI sedang membaca data relasinya...";
+          statusEl.textContent = t("detail.aiLoading");
           try {
             const data = await getDupes(slug, { explain: true });
             body.innerHTML = renderMarkdown(data.explanation || "");
             statusEl.textContent = data.generated_by
-              ? "Ulasan ditulis AI, dibatasi data katalog dan tingkat konsensus kurasi."
+              ? t("home.ai")
               : "";
-            if (!data.explanation) statusEl.textContent = "Penjelasan belum tersedia untuk parfum ini.";
+            if (!data.explanation) statusEl.textContent = t("detail.noDupes");
             btn.hidden = true;
             refreshTriggers();
           } catch {
             statusEl.setAttribute("data-tone", "error");
-            statusEl.textContent = "Ulasan AI sedang tidak tersedia.";
+            statusEl.textContent = t("detail.aiUnavailable");
           } finally {
             btn.removeAttribute("data-busy");
           }

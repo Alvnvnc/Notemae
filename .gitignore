@@ -20,6 +20,9 @@ dist/
 .agents/
 skills-lock.json
 
+# Local planning / feedback notes
+list-feedback.md
+
 # Backups & scratch artifacts
 *.bak
 image.png

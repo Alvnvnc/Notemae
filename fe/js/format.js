@@ -1,4 +1,5 @@
 /* Utilitas format + kalkulasi murni. Tidak menyentuh DOM kecuali escapeHtml. */
+import { t, localeMoney } from "./i18n.js";
 
 export function escapeHtml(value) {
   return String(value == null ? "" : value)
@@ -9,21 +10,13 @@ export function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
-const idrFull = new Intl.NumberFormat("id-ID", {
-  style: "currency", currency: "IDR", maximumFractionDigits: 0
-});
-const idrCompact = new Intl.NumberFormat("id-ID", {
-  style: "currency", currency: "IDR", notation: "compact", maximumFractionDigits: 1
-});
-
 export function rupiah(value) {
-  if (!value && value !== 0) return "Harga belum tersedia";
-  return idrFull.format(value);
+  return localeMoney(value);
 }
 
 export function rupiahCompact(value) {
   if (!value && value !== 0) return "-";
-  return idrCompact.format(value);
+  return localeMoney(value, { compact: true });
 }
 
 /* Brand sering terulang di dalam nama produk hasil scraping; jangan tampil dua kali. */
@@ -64,28 +57,22 @@ export function savings(originalPrice, dupePrice) {
 /* Wording relasi dupe terikat confidence kurasi (jangan melebih-lebihkan klaim). */
 export function relationClaim(relation, confidence, originalName) {
   const name = originalName || "parfum ini";
-  if (relation === "flanker_of") return `Rilisan satu lini dengan ${name}.`;
-  const kind = relation === "clone_of" ? "clone" : "alternatif terinspirasi";
-  if (confidence >= 0.8) return `Dikenal luas sebagai ${kind} dari ${name}.`;
-  if (confidence >= 0.6) return `Sering dibandingkan dengan ${name} oleh komunitas.`;
-  return `Disebut mirip ${name}, tetapi konsensus komunitasnya masih terbatas.`;
+  if (relation === "flanker_of") return t("relation.flankerClaim", { name });
+  const kind = relation === "clone_of" ? t("relation.clone") : t("relation.alternative");
+  if (confidence >= 0.8) return t("relation.highClaim", { kind, name });
+  if (confidence >= 0.6) return t("relation.midClaim", { name });
+  return t("relation.lowClaim", { name });
 }
 
 export function relationLabel(relation) {
-  if (relation === "clone_of") return "Clone";
-  if (relation === "inspired_by") return "Terinspirasi";
-  if (relation === "flanker_of") return "Flanker";
-  return "Serupa";
+  return t(`relation.${relation}`) || t("relation.similar");
 }
 
-const GENDER_LABEL = { men: "Pria", women: "Wanita", unisex: "Unisex" };
-export function genderLabel(g) { return GENDER_LABEL[g] || g || ""; }
+export function genderLabel(g) { return g ? t(`gender.${g}`) : ""; }
 
-const OCC_LABEL = { office: "Kantor", date: "Kencan", casual: "Harian", formal: "Formal", party: "Pesta", sport: "Olahraga" };
-export function occasionLabel(o) { return OCC_LABEL[o] || o; }
+export function occasionLabel(o) { return t(`occasion.${o}`) || o; }
 
-const CLIMATE_LABEL = { tropical: "Tropis", warm: "Hangat", mild: "Sejuk", hot: "Panas", cool: "Dingin", cold: "Dingin" };
-export function climateLabel(c) { return CLIMATE_LABEL[c] || c; }
+export function climateLabel(c) { return t(`climate.${c}`) || c; }
 
 /* KF-04: piramida notes. Data katalog berupa daftar notes berurutan
    (top -> base); tier dibentuk dari urutan itu dan diberi keterangan jujur

@@ -9,6 +9,10 @@ let viewEl = null;
 let current = { path: null, cleanup: null };
 let firstRender = true;
 
+export function refreshCurrentRoute() {
+  return renderPath(location.pathname.replace(/\/+$/, "") || "/", location.hash);
+}
+
 export function defineRoute(pattern, loader) {
   // pattern: "/parfum/:slug" -> regex bernama
   const names = [];
@@ -38,7 +42,7 @@ function match(path) {
 }
 
 function setMeta(title, desc) {
-  document.title = title ? `${title} | ScentSphere` : "ScentSphere | Panduan Dupe Parfum";
+  document.title = title ? `${title} | ScentSphere` : "ScentSphere | Perfume Dupe Guide";
   const meta = document.querySelector('meta[name="description"]');
   if (meta && desc) meta.setAttribute("content", desc);
 }
@@ -114,9 +118,7 @@ export function startRouter(el) {
     navigate(href);
   });
 
-  window.addEventListener("popstate", () => {
-    renderPath(location.pathname.replace(/\/+$/, "") || "/", location.hash);
-  });
+  window.addEventListener("popstate", () => { refreshCurrentRoute(); });
 
   return renderPath(location.pathname.replace(/\/+$/, "") || "/", location.hash);
 }

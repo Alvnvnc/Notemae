@@ -8,6 +8,7 @@ import { escapeHtml, rupiah, displayName, genderLabel } from "../format.js";
 import { revealCards, attachSheen, scrollToEl } from "../motion.js";
 import { attachAutocomplete } from "../autocomplete.js";
 import { navigate } from "../router.js";
+import { t, priceRangeLabel } from "../i18n.js";
 
 function readState() {
   const p = new URLSearchParams(location.search);
@@ -41,7 +42,7 @@ function cardHtml(f) {
   <a class="card" href="/parfum/${encodeURIComponent(f.slug)}" aria-label="${escapeHtml(displayName(f.brand, f.name))}">
     <p class="card__brand">${escapeHtml(f.brand)}</p>
     <h3 class="card__name">${escapeHtml(displayName("", f.name))}</h3>
-    <p class="card__notes">${notes || "Notes belum tercatat"}</p>
+    <p class="card__notes">${notes || t("common.noNotes")}</p>
     <div class="card__foot">
       <span class="card__price">${escapeHtml(rupiah(f.price_idr))}</span>
       <span class="card__meta">${escapeHtml(meta)}</span>
@@ -58,7 +59,7 @@ function skeletonHtml(n) {
 function pagerHtml(page, totalPages) {
   if (totalPages <= 1) return "";
   const btn = (p, label = p, current = false) =>
-    `<button type="button" data-page="${p}" ${current ? 'aria-current="page"' : ""} aria-label="Halaman ${p}">${label}</button>`;
+    `<button type="button" data-page="${p}" ${current ? 'aria-current="page"' : ""} aria-label="${t("catalog.page", { page: p })}">${label}</button>`;
   let out = "";
   if (page > 1) out += btn(page - 1, "‹");
   for (let p = 1; p <= totalPages; p += 1) {
@@ -79,53 +80,53 @@ export async function catalogView() {
   <section class="catalog sect shell" aria-labelledby="catalog-title">
     <div class="catalog__head">
       <div class="catalog__title">
-        <h1 class="h-sect" id="catalog-title">Katalog parfum.</h1>
+        <h1 class="h-sect" id="catalog-title">${t("catalog.title")}</h1>
         <span class="catalog__count" id="catalog-count" aria-live="polite"></span>
       </div>
       <div class="catalog__search">
         <form id="catalog-search-form" role="search">
-          <label class="sr-only" for="catalog-q">Cari parfum, brand, atau notes</label>
-          <input id="catalog-q" type="search" name="q" placeholder="Cari nama, brand, atau notes seperti vanilla musk"
+          <label class="sr-only" for="catalog-q">${t("catalog.searchLabel")}</label>
+          <input id="catalog-q" type="search" name="q" placeholder="${t("catalog.searchPlaceholder")}"
             value="${escapeHtml(state.q)}" autocomplete="off" role="combobox"
             aria-autocomplete="list" aria-controls="catalog-suggest" aria-expanded="false" />
-          <button class="btn" type="submit">Cari</button>
+          <button class="btn" type="submit">${t("catalog.search")}</button>
         </form>
-        <ul class="suggest" id="catalog-suggest" role="listbox" aria-label="Saran parfum"></ul>
+        <ul class="suggest" id="catalog-suggest" role="listbox" aria-label="${t("search.suggestions")}"></ul>
       </div>
     </div>
 
-    <div class="filters" aria-label="Filter katalog">
-      <div class="filters__row" id="filter-family" role="group" aria-label="Keluarga aroma">
-        <span class="filters__label" aria-hidden="true">Keluarga</span>
+    <div class="filters" aria-label="${t("catalog.filter")}">
+      <div class="filters__row" id="filter-family" role="group" aria-label="${t("catalog.family")}" >
+        <span class="filters__label" aria-hidden="true">${t("catalog.family")}</span>
         ${FAMILIES.map((f) =>
           `<button class="chip" type="button" data-family="${f.q}" data-note="${f.note}"
              aria-pressed="${state.family === f.q}">${f.name}</button>`).join("")}
       </div>
       <div class="filters__row">
-        <span class="filters__label" aria-hidden="true">Saring</span>
+        <span class="filters__label" aria-hidden="true">${t("catalog.filter")}</span>
         <label class="sr-only" for="filter-gender">Gender</label>
         <select id="filter-gender">
-          ${GENDERS.map((g) => `<option value="${g.value}" ${state.gender === g.value ? "selected" : ""}>${g.label}</option>`).join("")}
+          ${GENDERS.map((g) => `<option value="${g.value}" ${state.gender === g.value ? "selected" : ""}>${g.value ? t(`gender.${g.value}`) : t("gender.all")}</option>`).join("")}
         </select>
-        <label class="sr-only" for="filter-price">Rentang harga</label>
+        <label class="sr-only" for="filter-price">${t("detail.price")}</label>
         <select id="filter-price">
-          ${PRICE_RANGES.map((r, i) => `<option value="${i}" ${state.price === i ? "selected" : ""}>${r.label}</option>`).join("")}
+          ${PRICE_RANGES.map((r, i) => `<option value="${i}" ${state.price === i ? "selected" : ""}>${priceRangeLabel(i)}</option>`).join("")}
         </select>
         <label class="sr-only" for="filter-brand">Brand</label>
-        <select id="filter-brand"><option value="">Semua brand</option></select>
-        <button class="filters__reset" id="filter-reset" type="button">Hapus semua filter</button>
+        <select id="filter-brand"><option value="">${t("catalog.allBrands")}</option></select>
+        <button class="filters__reset" id="filter-reset" type="button">${t("catalog.reset")}</button>
       </div>
     </div>
 
     <p class="status" id="catalog-status" role="status"></p>
     <div class="grid" id="catalog-grid" style="margin-top:18px">${skeletonHtml(8)}</div>
-    <nav class="pager" id="catalog-pager" aria-label="Navigasi halaman"></nav>
+    <nav class="pager" id="catalog-pager" aria-label="${t("catalog.pagination")}"></nav>
   </section>`;
 
   return {
-    title: "Katalog",
-    desc: "Jelajahi katalog parfum original dan alternatifnya. Saring berdasarkan brand, gender, keluarga aroma, dan rentang harga.",
-    curtainWord: "Katalog",
+    title: t("nav.catalog"),
+    desc: t("catalog.title"),
+    curtainWord: t("nav.catalog"),
     stage: false,
     html,
     async mount(root) {
@@ -164,7 +165,7 @@ export async function catalogView() {
       function fillBrands(items) {
         const brands = [...new Set(items.map((f) => f.brand).filter(Boolean))].sort();
         brandSel.innerHTML =
-          `<option value="">Semua brand</option>` +
+          `<option value="">${t("catalog.allBrands")}</option>` +
           brands.map((b) => `<option value="${escapeHtml(b)}" ${state.brand === b ? "selected" : ""}>${escapeHtml(b)}</option>`).join("");
         if (state.brand && !brands.includes(state.brand)) { state.brand = ""; }
       }
@@ -175,13 +176,13 @@ export async function catalogView() {
         if (state.page > totalPages) state.page = totalPages;
         const pageItems = filtered.slice((state.page - 1) * PAGE_SIZE, state.page * PAGE_SIZE);
 
-        countEl.textContent = `${filtered.length} parfum`;
+        countEl.textContent = t("catalog.count", { count: filtered.length });
         if (!filtered.length) {
           grid.innerHTML = `
             <div class="empty" style="grid-column:1/-1">
-              <p class="h-sect">Tidak ada yang cocok.</p>
-              <p>Coba longgarkan filter, atau cari lewat notes seperti "vanilla" atau "citrus".</p>
-              <button class="btn btn--ghost" type="button" id="empty-reset">Hapus semua filter</button>
+              <p class="h-sect">${t("catalog.empty")}</p>
+              <p>${t("catalog.emptyHint")}</p>
+              <button class="btn btn--ghost" type="button" id="empty-reset">${t("catalog.reset")}</button>
             </div>`;
           const er = grid.querySelector("#empty-reset");
           if (er) er.addEventListener("click", resetFilters);
@@ -197,7 +198,7 @@ export async function catalogView() {
         const mySeq = ++seq;
         const fam = FAMILIES.find((f) => f.q === state.family);
         const range = PRICE_RANGES[state.price];
-        setStatus("Memuat katalog...");
+        setStatus(t("catalog.loading"));
         grid.innerHTML = skeletonHtml(8);
         pager.innerHTML = "";
         try {
@@ -217,7 +218,7 @@ export async function catalogView() {
           renderPage();
         } catch {
           if (mySeq !== seq) return;
-          setStatus("Katalog tidak bisa dimuat. Periksa koneksi lalu coba lagi.", "error");
+          setStatus(t("catalog.error"), "error");
           grid.innerHTML = "";
         }
       }

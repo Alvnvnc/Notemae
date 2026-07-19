@@ -1,7 +1,8 @@
 /* Boot aplikasi: motion, router, chrome (masthead, finder), veil. */
 
 import { initMotion, lockScroll, reduceMotion } from "./motion.js";
-import { defineRoute, startRouter, navigate } from "./router.js";
+import { defineRoute, startRouter, navigate, refreshCurrentRoute } from "./router.js";
+import { getLocale, setLocale, t } from "./i18n.js";
 import { attachAutocomplete } from "./autocomplete.js";
 import { homeView } from "./views/home.js";
 import { catalogView } from "./views/catalog.js";
@@ -85,10 +86,36 @@ function initFinder() {
   });
 }
 
+function initLocale() {
+  const syncChrome = () => {
+    const locale = getLocale();
+    document.documentElement.lang = locale;
+    document.querySelectorAll("[data-locale]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.locale === locale));
+    });
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
+    const searchInput = document.getElementById("finder-input");
+    if (searchInput) searchInput.placeholder = t("search.placeholder");
+    const hint = document.getElementById("finder-hint");
+    if (hint) hint.textContent = t("search.hint");
+    const close = document.getElementById("finder-close");
+    if (close) close.setAttribute("aria-label", t("nav.close"));
+    const finder = document.getElementById("finder");
+    if (finder) finder.setAttribute("aria-label", t("search.label"));
+  };
+  document.querySelectorAll("[data-locale]").forEach((button) => {
+    button.addEventListener("click", () => setLocale(button.dataset.locale));
+  });
+  window.addEventListener("scentsphere:localechange", () => { syncChrome(); refreshCurrentRoute(); });
+  syncChrome();
+}
+
 /* ---- boot ----------------------------------------------------------------- */
 function boot() {
   initMotion();
   initScrollChrome();
+  initLocale();
   initFinder();
 
   defineRoute("/", homeView);

@@ -236,6 +236,17 @@ body[data-scrolled="true"] .masthead {
 }
 .nav-search:active { transform: scale(0.97); }
 
+.locale-switch {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--mute); font-size: 0.72rem; letter-spacing: .08em;
+}
+.locale-switch button {
+  color: var(--mute); padding: 4px 2px; font-size: inherit; letter-spacing: inherit;
+  transition: color var(--speed-ui) var(--ease);
+}
+.locale-switch button[aria-pressed="true"] { color: var(--amber); }
+.locale-switch button:hover { color: var(--bone); }
+
 /* ==========================================================================
    Finder - pencarian cepat + autocomplete (KF-02)
    ========================================================================== */
@@ -981,6 +992,7 @@ body[data-motion="css"] [data-reveal].is-inview { opacity: 1; transform: none; }
   .wordmark em { display: none; }
   .nav-search span { display: none; }
   .nav-search { padding: 9px 11px; }
+  .locale-switch { gap: 3px; }
 
   .hero { padding-top: 74px; }
   .hero__proof { margin-left: 0; }

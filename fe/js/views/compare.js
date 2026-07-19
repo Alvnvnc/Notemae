@@ -7,13 +7,14 @@ import {
   escapeHtml, rupiah, displayName, noteOverlap, savings, genderLabel
 } from "../format.js";
 import { compareIntro, countUp } from "../motion.js";
+import { t } from "../i18n.js";
 
 function colHtml(f, role, uniqueNotes, side) {
   const rows = [
     ["Gender", genderLabel(f.gender)],
-    ["Rating", f.rating ? `★ ${Number(f.rating).toFixed(1)}` : "Belum ada"],
-    ["Ketahanan", f.longevity_score ? `${Number(f.longevity_score).toFixed(1)} / 5` : "Belum ada"],
-    ["Proyeksi", f.projection_score ? `${Number(f.projection_score).toFixed(1)} / 5` : "Belum ada"]
+    [t("common.rating"), f.rating ? `★ ${Number(f.rating).toFixed(1)}` : t("common.noData")],
+    [t("detail.longevity"), f.longevity_score ? `${Number(f.longevity_score).toFixed(1)} / 5` : t("common.noData")],
+    [t("detail.projection"), f.projection_score ? `${Number(f.projection_score).toFixed(1)} / 5` : t("common.noData")]
   ];
   return `
   <div class="compare__col compare__col--${side}">
@@ -23,10 +24,10 @@ function colHtml(f, role, uniqueNotes, side) {
     <p class="compare__price">${escapeHtml(rupiah(f.price_idr))}</p>
     <dl>
       ${rows.map(([dt, dd]) => `<dt>${dt}</dt><dd>${escapeHtml(dd)}</dd>`).join("")}
-      <dt>Notes khas</dt>
+      <dt>${t("common.notes")}</dt>
       <dd>
         <span class="compare__notes">
-          ${uniqueNotes.length ? uniqueNotes.map((n) => `<span class="note">${escapeHtml(n)}</span>`).join("") : "<span class='note'>tidak ada</span>"}
+          ${uniqueNotes.length ? uniqueNotes.map((n) => `<span class="note">${escapeHtml(n)}</span>`).join("") : `<span class='note'>${t("common.noData")}</span>`}
         </span>
       </dd>
     </dl>
@@ -35,16 +36,16 @@ function colHtml(f, role, uniqueNotes, side) {
 
 function failView() {
   return {
-    title: "Perbandingan",
-    desc: "Perbandingan parfum tidak tersedia.",
-    curtainWord: "Bandingkan",
+    title: t("errors.compare"),
+    desc: t("errors.compare"),
+    curtainWord: t("nav.catalog"),
     stage: false,
     html: `
       <section class="compare sect shell">
         <div class="empty">
-          <p class="h-sect">Perbandingan tidak bisa dimuat.</p>
-          <p>Salah satu parfum tidak ditemukan di katalog.</p>
-          <a class="btn" href="/katalog">Kembali ke katalog</a>
+          <p class="h-sect">${t("errors.compare")}</p>
+          <p>${t("errors.compareHint")}</p>
+          <a class="btn" href="/katalog">${t("common.backCatalog")}</a>
         </div>
       </section>`
   };
@@ -64,43 +65,43 @@ export async function compareView({ a, b }) {
 
   const html = `
   <section class="compare sect shell" aria-labelledby="compare-title">
-    <a class="crumb" href="/parfum/${encodeURIComponent(ori.slug)}">‹ Kembali ke ${escapeHtml(displayName(ori.brand, ori.name))}</a>
+    <a class="crumb" href="/parfum/${encodeURIComponent(ori.slug)}">‹ ${t("common.backCatalog")}: ${escapeHtml(displayName(ori.brand, ori.name))}</a>
     <h1 class="h-sect compare__title" id="compare-title" data-reveal>
-      Berdampingan: <em>${escapeHtml(displayName("", ori.name))}</em> dan ${escapeHtml(displayName("", dup.name))}.
+      ${t("compare.title", { a: escapeHtml(displayName("", ori.name)), b: escapeHtml(displayName("", dup.name)) })}
     </h1>
 
     <div class="compare__stage">
-      ${colHtml(ori, "Original", ov.onlyA, "ori")}
+      ${colHtml(ori, t("role.original"), ov.onlyA, "ori")}
       <div class="compare__mid">
         <p class="compare__pct" id="compare-pct" data-count="${ov.pct}">0%</p>
-        <p class="compare__pct-label">kemiripan komposisi notes</p>
+        <p class="compare__pct-label">${t("compare.similarity")}</p>
         ${ov.shared.length ? `
-          <div class="compare__shared" role="list" aria-label="Notes yang sama">
+          <div class="compare__shared" role="list" aria-label="${t("common.notes")} ${t("common.noData")} ">
             ${ov.shared.map((n) => `<span class="note note--shared" role="listitem">${escapeHtml(n)}</span>`).join("")}
-          </div>` : `<p class="status">Tidak ada notes yang persis sama di catatan katalog.</p>`}
+        </div>` : `<p class="status">${t("compare.noShared")}</p>`}
         ${save ? `
           <div class="compare__save">
             <strong>${escapeHtml(rupiah(save.diff))}</strong>
-            <span>lebih hemat (${save.pct}% dari harga original)</span>
+            <span>${t("compare.saved", { pct: save.pct })}</span>
           </div>` : priceGap ? `
           <div class="compare__save">
             <strong>${escapeHtml(rupiah(priceGap))}</strong>
-            <span>selisih harga keduanya</span>
+            <span>${t("compare.gap")}</span>
           </div>` : ""}
       </div>
-      ${colHtml(dup, "Alternatif", ov.onlyB, "dup")}
+      ${colHtml(dup, t("role.alternative"), ov.onlyB, "dup")}
     </div>
 
     <div class="compare__foot">
-      <p class="status">Perbandingan dihitung dari catatan katalog; profil aroma nyata bisa berbeda di kulit.</p>
-      <a class="link-quiet" href="/parfum/${encodeURIComponent(dup.slug)}">Detail ${escapeHtml(displayName("", dup.name))} ›</a>
+      <p class="status">${t("compare.disclaimer")}</p>
+      <a class="link-quiet" href="/parfum/${encodeURIComponent(dup.slug)}">${t("common.detail")} ${escapeHtml(displayName("", dup.name))} ›</a>
     </div>
   </section>`;
 
   return {
     title: `${displayName("", ori.name)} vs ${displayName("", dup.name)}`,
-    desc: `Perbandingan ${displayName(ori.brand, ori.name)} dengan ${displayName(dup.brand, dup.name)}: ${ov.pct}% kemiripan notes${save ? `, hemat ${save.pct}%` : ""}.`,
-    curtainWord: "Bandingkan",
+    desc: `${t("common.compare")} ${displayName(ori.brand, ori.name)} / ${displayName(dup.brand, dup.name)}: ${ov.pct}% ${t("common.similarity")}${save ? `, ${t("common.savings").toLowerCase()} ${save.pct}%` : ""}.`,
+    curtainWord: t("common.compare"),
     stage: false,
     html,
     async mount(root) {
