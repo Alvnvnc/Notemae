@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b100c" />
+    <meta
+      name="description"
+      content="ScentSphere Dupe Guide. Temukan dupe dari parfum favoritmu, lengkap dengan skor kemiripan notes, perbandingan berdampingan, dan hitungan penghematan."
+    />
+    <meta property="og:title" content="ScentSphere | Panduan Dupe Parfum" />
+    <meta
+      property="og:description"
+      content="Aroma kelas atas, harga masuk akal. Skor kemiripan berbasis komposisi notes, bukan klaim kosong."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://notemae.pavernor.site/" />
+    <title>ScentSphere | Panduan Dupe Parfum</title>
+
+    <link rel="preload" href="/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/CormorantGaramond-var.woff2" as="font" type="font/woff2" crossorigin />
+
+    <link rel="stylesheet" href="/app.css?v=dupe1" />
+    <script src="/runtime-env.js?v=dupe1" defer></script>
+    <script src="/vendor/gsap.min.js" defer></script>
+    <script src="/vendor/ScrollTrigger.min.js" defer></script>
+    <script src="/vendor/SplitText.min.js" defer></script>
+    <script src="/vendor/Flip.min.js" defer></script>
+    <script src="/vendor/lenis.min.js" defer></script>
+    <script src="/background.js?v=dupe1" defer></script>
+    <script type="module" src="/js/main.js?v=dupe1"></script>
+  </head>
+  <body data-loading="true">
+    <a class="skip-link" href="#view">Langsung ke konten</a>
+
+    <!-- z-70: intro veil, first paint only -->
+    <div class="veil" id="veil" role="status" aria-label="Memuat ScentSphere">
+      <span class="veil__mark">ScentSphere</span>
+      <span class="veil__bar" aria-hidden="true"><i id="veil-fill"></i></span>
+    </div>
+
+    <!-- z-60: route transition curtain -->
+    <div class="curtain" id="curtain" aria-hidden="true"><span class="curtain__word" id="curtain-word"></span></div>
+
+    <!-- z-0: WebGL stage, hero only -->
+    <div class="stage" id="stage" aria-hidden="true">
+      <div class="stage__poster"></div>
+      <canvas class="stage__canvas" id="bg-canvas"></canvas>
+      <div class="stage__scrim"></div>
+    </div>
+
+    <!-- z-40: fixed header -->
+    <header class="masthead" id="masthead">
+      <a class="wordmark" href="/" data-link aria-label="ScentSphere, beranda">
+        ScentSphere<em>dupe guide</em>
+      </a>
+      <nav class="masthead__nav" aria-label="Navigasi utama">
+        <a class="nav-link" href="/katalog" data-link>Katalog</a>
+        <a class="nav-link" href="/#konsultan" data-link>Konsultan</a>
+        <button class="nav-search" id="nav-search" type="button" aria-label="Cari parfum">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span>Cari</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- z-10: routed views -->
+    <main id="view" tabindex="-1"></main>
+
+    <!-- z-50: quick search overlay -->
+    <div class="finder" id="finder" role="dialog" aria-modal="true" aria-label="Pencarian cepat" hidden>
+      <div class="finder__panel">
+        <form class="finder__form" id="finder-form" role="search">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input
+            id="finder-input"
+            type="search"
+            name="q"
+            placeholder="Ketik nama parfum atau brand"
+            autocomplete="off"
+            aria-autocomplete="list"
+            aria-controls="finder-list"
+            aria-expanded="false"
+            role="combobox"
+          />
+          <button class="finder__close" id="finder-close" type="button" aria-label="Tutup pencarian">Esc</button>
+        </form>
+        <ul class="finder__list" id="finder-list" role="listbox" aria-label="Saran parfum"></ul>
+        <p class="finder__hint" id="finder-hint">Coba "aventus", "baccarat", atau notes seperti "vanilla musk".</p>
+      </div>
+    </div>
+
+    <footer class="colophon" id="colophon">
+      <div class="colophon__grid">
+        <div class="colophon__brand">
+          <span class="wordmark wordmark--foot">ScentSphere<em>dupe guide</em></span>
+          <p>
+            Panduan menemukan alternatif parfum. Skor kemiripan dihitung dari
+            komposisi notes di katalog, bukan klaim resmi brand.
+          </p>
+        </div>
+        <nav class="colophon__nav" aria-label="Navigasi footer">
+          <a href="/katalog" data-link>Katalog</a>
+          <a href="/#pasangan" data-link>Pasangan tersorot</a>
+          <a href="/#konsultan" data-link>Konsultan aroma</a>
+        </nav>
+        <div class="colophon__legal">
+          <p>Relasi dupe berasal dari kurasi konsensus komunitas dan tidak menilai keaslian produk fisik.</p>
+          <p>Sebagian data identitas produk memuat kontribusi Open Beauty Facts di bawah lisensi ODbL.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

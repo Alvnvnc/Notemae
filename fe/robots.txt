@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://notemae.pavernor.site/sitemap.xml
