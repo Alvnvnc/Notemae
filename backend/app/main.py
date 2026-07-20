@@ -1,16 +1,20 @@
+import json
 import secrets
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 import httpx
 from fastapi import FastAPI, Header, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from psycopg.rows import dict_row
 
 from .config import settings
 from .db import pool, start_pool, stop_pool
 from .models import (
     DupeResponse,
+    FeaturedList,
     Fragrance,
     FragranceList,
     InternalFragranceUpsert,
@@ -24,12 +28,26 @@ from .models import (
 
 
 FIELDS = """
-    id, slug, brand, name, description, gender, release_year, notes, occasions,
+    id, slug, brand, name, description, gender, release_year,
+    notes, top_notes, heart_notes, base_notes, occasions,
     climates, price_idr, rating, longevity_score, projection_score, source_url, source_type
 """
 PREFIXED_FIELDS = ", ".join(
     f"f.{column.strip()}" for column in FIELDS.split(",") if column.strip()
 )
+
+# Tier name as callers write it -> the column it filters. Anything else
+# falls back to the flat union, so an unknown tier widens the search rather
+# than silently returning nothing.
+NOTE_TIER_COLUMNS = {
+    "top": "top_notes",
+    "heart": "heart_notes",
+    "base": "base_notes",
+}
+
+# Mirrors FALLBACK_SENTINEL in agent/app/main.py: the agent appends it to a
+# streamed explanation that came from its deterministic fallback.
+FALLBACK_SENTINEL = "␞catalog_fallback"
 
 DUPE_DISCLAIMER = (
     "Dupe/clone relationships come from community-consensus curation, not official "
@@ -67,6 +85,7 @@ def list_catalog(
     max_price_idr: int | None = None,
     avoid_notes: list[str] | None = None,
     query_embedding: list[float] | None = None,
+    note_tier: str | None = None,
     limit: int = 12,
 ) -> list[dict[str, Any]]:
     clauses: list[str] = []
@@ -78,7 +97,11 @@ def list_catalog(
         clauses.append("(brand ILIKE %s OR name ILIKE %s OR description ILIKE %s)")
         where_values.extend([f"%{query}%"] * 3)
     if note:
-        clauses.append("%s = ANY(notes)")
+        # A tier-scoped filter reads the pyramid column directly; records
+        # with no stored pyramid drop out of it, which is correct — the
+        # catalog cannot claim where their notes sit.
+        column = NOTE_TIER_COLUMNS.get((note_tier or "").lower(), "notes")
+        clauses.append(f"%s = ANY({column})")
         where_values.append(note.lower())
     if occasion:
         clauses.append("%s = ANY(occasions)")
@@ -248,12 +271,26 @@ async def agent_embedding(text: str) -> list[float] | None:
 
 
 def fragrance_document(record: dict[str, Any]) -> str:
+    # Tiers are named in the embedded text so semantic retrieval can tell a
+    # perfume that opens on vanilla from one that dries down to it. Records
+    # without a stored pyramid contribute the flat list only — inferring
+    # tiers here would bake a guess into the vector.
+    pyramid = " | ".join(
+        f"{label} notes: {', '.join(record[column])}"
+        for label, column in (
+            ("top", "top_notes"),
+            ("heart", "heart_notes"),
+            ("base", "base_notes"),
+        )
+        if record.get(column)
+    )
     return " | ".join(
         part
         for part in (
             f"{record['brand']} {record['name']}",
             record["description"],
             f"notes: {', '.join(record['notes'])}" if record["notes"] else "",
+            pyramid,
             f"occasions: {', '.join(record['occasions'])}"
             if record["occasions"]
             else "",
@@ -337,9 +374,20 @@ def combine_query_vectors(
     return combined
 
 
-async def request_recommendation(
-    payload: RecommendationRequest,
-) -> RecommendationResponse:
+def serialize_reference(record: dict[str, Any]) -> dict[str, Any]:
+    trimmed = {
+        key: value for key, value in record.items() if key != "document_embedding"
+    }
+    return Fragrance.model_validate(trimmed).model_dump(mode="json")
+
+
+async def build_agent_request(payload: RecommendationRequest) -> dict[str, Any]:
+    """Assemble the candidate pool the agent ranks.
+
+    Everything here is catalog work (embedding lookup + SQL), so it is the
+    cheap half of a recommendation; the expensive half is whatever the agent
+    does with the result.
+    """
     query_text = profile_query_text(payload)
     text_embedding = await agent_embedding(query_text) if query_text else None
 
@@ -393,33 +441,34 @@ async def request_recommendation(
             detail="No catalog fragrance passes the requested filters",
         )
 
-    def serialize_reference(record: dict[str, Any]) -> dict[str, Any]:
-        trimmed = {key: value for key, value in record.items() if key != "document_embedding"}
-        return Fragrance.model_validate(trimmed).model_dump(mode="json")
-
-    try:
-        serialized_candidates = [
+    return {
+        "profile": payload.model_dump(mode="json"),
+        "candidates": [
             Fragrance.model_validate(candidate).model_dump(mode="json")
             for candidate in candidates
-        ]
+        ],
+        "liked_references": [
+            serialize_reference(record) for record in liked_records
+        ],
+        "disliked_references": [
+            serialize_reference(record) for record in disliked_records
+        ],
+    }
+
+
+async def request_recommendation(
+    payload: RecommendationRequest,
+) -> RecommendationResponse:
+    request = await build_agent_request(payload)
+    try:
         async with httpx.AsyncClient(timeout=45) as client:
             response = await client.post(
-                f"{settings.agent_url}/v1/recommend",
-                json={
-                    "profile": payload.model_dump(mode="json"),
-                    "candidates": serialized_candidates,
-                    "liked_references": [
-                        serialize_reference(record) for record in liked_records
-                    ],
-                    "disliked_references": [
-                        serialize_reference(record) for record in disliked_records
-                    ],
-                },
+                f"{settings.agent_url}/v1/recommend", json=request
             )
             response.raise_for_status()
         return RecommendationResponse.model_validate(response.json())
     except (httpx.HTTPError, TypeError, ValueError):
-        return fallback_recommendation(candidates[: payload.limit])
+        return fallback_recommendation(request["candidates"][: payload.limit])
 
 
 @app.get("/health")
@@ -434,6 +483,7 @@ def health() -> dict[str, str]:
 def search_fragrances(
     q: str | None = Query(default=None, min_length=1, max_length=100),
     note: str | None = Query(default=None, min_length=1, max_length=50),
+    note_tier: Literal["top", "heart", "base"] | None = Query(default=None),
     occasion: str | None = Query(default=None, min_length=1, max_length=50),
     max_price_idr: int | None = Query(default=None, ge=0),
     limit: int = Query(default=12, ge=1, le=50),
@@ -442,6 +492,7 @@ def search_fragrances(
         items=list_catalog(
             query=q,
             note=note,
+            note_tier=note_tier,
             occasion=occasion,
             max_price_idr=max_price_idr,
             limit=limit,
@@ -510,6 +561,53 @@ async def get_fragrance_dupes(
     )
 
 
+def list_featured_originals(limit: int) -> list[dict[str, Any]]:
+    """Originals with the most curated alternatives pointing at them.
+
+    The home page used to hardcode slugs, which silently 404ed whenever the
+    catalog changed. Ranking by curation depth keeps the picks in sync with
+    whatever is actually in the database.
+    """
+    with (
+        pool.connection() as connection,
+        connection.cursor(row_factory=dict_row) as cursor,
+    ):
+        cursor.execute(
+            f"""
+            SELECT {PREFIXED_FIELDS}
+            FROM fragrance_relationships fr
+            JOIN fragrances f ON f.id = fr.related_id
+            WHERE fr.relation IN ('clone_of', 'inspired_by')
+            GROUP BY {PREFIXED_FIELDS}
+            ORDER BY COUNT(*) DESC, MAX(fr.confidence) DESC, f.rating DESC NULLS LAST
+            LIMIT %s
+            """,
+            (limit,),
+        )
+        return list(cursor.fetchall())
+
+
+@app.get("/v1/featured", response_model=FeaturedList)
+def featured(limit: int = Query(default=5, ge=1, le=12)) -> FeaturedList:
+    items: list[DupeResponse] = []
+    for record in list_featured_originals(limit):
+        dupes, original_of, flankers = list_relationships(record["id"])
+        if not dupes:
+            continue
+        related_ids = {item.fragrance.id for item in (*dupes, *original_of, *flankers)}
+        items.append(
+            DupeResponse(
+                fragrance=Fragrance.model_validate(record),
+                dupes=dupes,
+                original_of=original_of,
+                flankers=flankers,
+                similar=list_similar(record["id"], related_ids | {record["id"]}),
+                disclaimer=DUPE_DISCLAIMER,
+            )
+        )
+    return FeaturedList(items=items)
+
+
 @app.post("/v1/recommendations", response_model=RecommendationResponse)
 async def recommend(payload: RecommendationRequest) -> RecommendationResponse:
     return await request_recommendation(payload)
@@ -544,6 +642,190 @@ async def recommend_from_text(
     )
 
 
+def fallback_explanation(match: dict[str, Any]) -> str:
+    fragrance = match["fragrance"]
+    reasons = ", ".join(match.get("reasons") or []) or "the available catalog fields"
+    return (
+        f"{fragrance['brand']} {fragrance['name']} scores {match['score']}% based on "
+        f"{reasons}. This result uses only supplied catalog data."
+    )
+
+
+def sse(event: str, data: Any) -> str:
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+async def agent_rank(
+    client: httpx.AsyncClient, request: dict[str, Any], *, rerank: bool
+) -> list[dict[str, Any]] | None:
+    try:
+        response = await client.post(
+            f"{settings.agent_url}/v1/recommend/rank",
+            json={**request, "rerank": rerank},
+        )
+        response.raise_for_status()
+        return response.json()["matches"]
+    except (httpx.HTTPError, KeyError, TypeError, ValueError):
+        return None
+
+
+def matches_event(matches: list[dict[str, Any]], *, refined: bool) -> dict[str, Any]:
+    return {
+        "recommendation": matches[0]["fragrance"],
+        "alternatives": [match["fragrance"] for match in matches[1:]],
+        "matches": matches,
+        "refined": refined,
+    }
+
+
+async def parse_profile(
+    client: httpx.AsyncClient, text: str, limit: int, *, fast: bool
+) -> tuple[RecommendationRequest, str]:
+    try:
+        response = await client.post(
+            f"{settings.agent_url}/v1/preferences/parse",
+            params={"fast": str(fast).lower()},
+            json={"text": text, "limit": limit},
+        )
+        response.raise_for_status()
+        parsed = response.json()
+        return (
+            RecommendationRequest.model_validate(parsed["profile"]),
+            parsed["generated_by"],
+        )
+    except (httpx.HTTPError, KeyError, TypeError, ValueError):
+        return RecommendationRequest(free_text=text, limit=limit), "catalog_fallback"
+
+
+async def recommendation_events(
+    payload: RecommendationRequest | None,
+    text: str | None,
+    limit: int,
+) -> AsyncIterator[str]:
+    """Emit a recommendation in the order the user can act on it.
+
+    The deterministic ranking lands in well under a second, so it is sent
+    first and the browser paints real results immediately. The LLM passes
+    (preference parsing, consensus rerank, narrative) each refine what is
+    already on screen instead of gating it.
+    """
+    async with httpx.AsyncClient(timeout=60) as client:
+        profile = payload
+        profile_generated_by = None
+
+        if profile is None:
+            yield sse("stage", {"stage": "reading"})
+            profile, _ = await parse_profile(client, text, limit, fast=True)
+
+        yield sse("stage", {"stage": "matching"})
+        try:
+            request = await build_agent_request(profile)
+        except HTTPException as error:
+            yield sse("error", {"detail": error.detail})
+            return
+
+        matches = await agent_rank(client, request, rerank=False)
+        if not matches:
+            fallback = fallback_recommendation(request["candidates"][:limit])
+            yield sse("matches", {**fallback.model_dump(mode="json"), "refined": True})
+            yield sse("done", {"generated_by": "catalog_fallback"})
+            return
+        yield sse("matches", matches_event(matches, refined=False))
+
+        # The provisional profile above came from keyword heuristics; the model
+        # parse can change budget/occasion/notes, so the pool is rebuilt.
+        if text is not None:
+            yield sse("stage", {"stage": "reading"})
+            profile, profile_generated_by = await parse_profile(
+                client, text, limit, fast=False
+            )
+            yield sse(
+                "profile",
+                {
+                    "profile": profile.model_dump(mode="json"),
+                    "generated_by": profile_generated_by,
+                },
+            )
+            try:
+                request = await build_agent_request(profile)
+            except HTTPException as error:
+                yield sse("error", {"detail": error.detail})
+                return
+
+        yield sse("stage", {"stage": "refining"})
+        refined = await agent_rank(client, request, rerank=True)
+        matches = refined or matches
+        yield sse("matches", matches_event(matches, refined=True))
+
+        yield sse("stage", {"stage": "writing"})
+        generated_by = "qwen"
+        try:
+            async with client.stream(
+                "POST",
+                f"{settings.agent_url}/v1/recommend/explain",
+                json={
+                    "profile": profile.model_dump(mode="json"),
+                    "recommendation": matches[0],
+                    "alternatives": matches[1 : limit + 1],
+                },
+            ) as response:
+                response.raise_for_status()
+                # The fallback sentinel only ever arrives last, but it can be
+                # split across chunks, so hold back that many characters.
+                held = ""
+                async for chunk in response.aiter_text():
+                    if not chunk:
+                        continue
+                    held += chunk
+                    emit, held = held[: -len(FALLBACK_SENTINEL)], held[-len(FALLBACK_SENTINEL) :]
+                    if emit:
+                        yield sse("delta", {"text": emit})
+                if held.endswith(FALLBACK_SENTINEL):
+                    held = held[: -len(FALLBACK_SENTINEL)]
+                    generated_by = "catalog_fallback"
+                if held:
+                    yield sse("delta", {"text": held})
+        except (httpx.HTTPError, TypeError, ValueError):
+            generated_by = "catalog_fallback"
+            yield sse("delta", {"text": fallback_explanation(matches[0])})
+
+        yield sse(
+            "done",
+            {
+                "generated_by": generated_by,
+                "profile_generated_by": profile_generated_by,
+            },
+        )
+
+
+def stream_response(events: AsyncIterator[str]) -> StreamingResponse:
+    return StreamingResponse(
+        events,
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-store",
+            "Connection": "keep-alive",
+            # nginx/Cloudflare buffer SSE by default, which would defeat the
+            # whole point of streaming here.
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
+@app.post("/v1/recommendations/stream")
+async def recommend_stream(payload: RecommendationRequest) -> StreamingResponse:
+    return stream_response(recommendation_events(payload, None, payload.limit))
+
+
+@app.post("/v1/recommendations/from-text/stream")
+async def recommend_from_text_stream(
+    payload: TextRecommendationRequest,
+) -> StreamingResponse:
+    return stream_response(
+        recommendation_events(None, payload.text, payload.limit)
+    )
+
+
 @app.post("/internal/fragrances", response_model=Fragrance)
 def upsert_fragrance(
     payload: InternalFragranceUpsert,
@@ -559,11 +841,13 @@ def upsert_fragrance(
     values = payload.model_dump()
     statement = f"""
         INSERT INTO fragrances (
-            slug, brand, name, description, gender, release_year, notes, occasions, climates,
+            slug, brand, name, description, gender, release_year,
+            notes, top_notes, heart_notes, base_notes, occasions, climates,
             price_idr, rating, longevity_score, projection_score, source_url, source_type
         ) VALUES (
             %(slug)s, %(brand)s, %(name)s, %(description)s, %(gender)s, %(release_year)s,
-            %(notes)s, %(occasions)s, %(climates)s, %(price_idr)s, %(rating)s,
+            %(notes)s, %(top_notes)s, %(heart_notes)s, %(base_notes)s,
+            %(occasions)s, %(climates)s, %(price_idr)s, %(rating)s,
             %(longevity_score)s, %(projection_score)s, %(source_url)s, %(source_type)s
         )
         ON CONFLICT (slug) DO UPDATE SET
@@ -573,6 +857,9 @@ def upsert_fragrance(
             gender = EXCLUDED.gender,
             release_year = EXCLUDED.release_year,
             notes = EXCLUDED.notes,
+            top_notes = EXCLUDED.top_notes,
+            heart_notes = EXCLUDED.heart_notes,
+            base_notes = EXCLUDED.base_notes,
             occasions = EXCLUDED.occasions,
             climates = EXCLUDED.climates,
             price_idr = EXCLUDED.price_idr,
@@ -586,6 +873,9 @@ def upsert_fragrance(
                     OR fragrances.name IS DISTINCT FROM EXCLUDED.name
                     OR fragrances.description IS DISTINCT FROM EXCLUDED.description
                     OR fragrances.notes IS DISTINCT FROM EXCLUDED.notes
+                    OR fragrances.top_notes IS DISTINCT FROM EXCLUDED.top_notes
+                    OR fragrances.heart_notes IS DISTINCT FROM EXCLUDED.heart_notes
+                    OR fragrances.base_notes IS DISTINCT FROM EXCLUDED.base_notes
                     OR fragrances.occasions IS DISTINCT FROM EXCLUDED.occasions
                     OR fragrances.climates IS DISTINCT FROM EXCLUDED.climates
                 THEN NULL
@@ -608,6 +898,7 @@ def upsert_fragrance(
 def list_fragrances_internal(
     x_service_key: Annotated[str | None, Header()] = None,
     missing_notes: bool = Query(default=False),
+    missing_pyramid: bool = Query(default=False),
     limit: int = Query(default=100, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
 ) -> dict[str, Any]:
@@ -618,7 +909,15 @@ def list_fragrances_internal(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid service key"
         )
 
-    where = "WHERE notes = '{}'" if missing_notes else ""
+    # missing_pyramid is the superset: a record with no notes has no tiers
+    # either, so enrichment can sweep both never-enriched rows and rows
+    # enriched before tiers existed in one pass.
+    if missing_pyramid:
+        where = "WHERE top_notes = '{}' AND heart_notes = '{}' AND base_notes = '{}'"
+    elif missing_notes:
+        where = "WHERE notes = '{}'"
+    else:
+        where = ""
     with (
         pool.connection() as connection,
         connection.cursor(row_factory=dict_row) as cursor,

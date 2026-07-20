@@ -9,7 +9,12 @@ CREATE TABLE fragrances (
     description TEXT NOT NULL DEFAULT '',
     gender TEXT NOT NULL DEFAULT 'unisex',
     release_year INTEGER,
+    -- ordered union of the three tiers below, opening first; stands on its
+    -- own for records ingested before the pyramid existed
     notes TEXT[] NOT NULL DEFAULT '{}',
+    top_notes TEXT[] NOT NULL DEFAULT '{}',
+    heart_notes TEXT[] NOT NULL DEFAULT '{}',
+    base_notes TEXT[] NOT NULL DEFAULT '{}',
     occasions TEXT[] NOT NULL DEFAULT '{}',
     climates TEXT[] NOT NULL DEFAULT '{}',
     price_idr INTEGER,
@@ -24,6 +29,11 @@ CREATE TABLE fragrances (
 );
 
 CREATE INDEX fragrances_notes_idx ON fragrances USING GIN (notes);
+CREATE INDEX fragrances_top_notes_idx ON fragrances USING GIN (top_notes);
+CREATE INDEX fragrances_heart_notes_idx ON fragrances USING GIN (heart_notes);
+CREATE INDEX fragrances_base_notes_idx ON fragrances USING GIN (base_notes);
+CREATE INDEX fragrances_missing_pyramid_idx ON fragrances (id)
+    WHERE top_notes = '{}' AND heart_notes = '{}' AND base_notes = '{}';
 CREATE INDEX fragrances_occasions_idx ON fragrances USING GIN (occasions);
 CREATE INDEX fragrances_climates_idx ON fragrances USING GIN (climates);
 
@@ -65,31 +75,40 @@ CREATE TABLE ingestion_runs (
 );
 
 INSERT INTO fragrances (
-    slug, brand, name, description, gender, notes, occasions, climates,
+    slug, brand, name, description, gender,
+    notes, top_notes, heart_notes, base_notes, occasions, climates,
     price_idr, rating, longevity_score, projection_score, source_url, source_type
 ) VALUES
     (
         'prada-lhomme', 'Prada', 'L''Homme',
         'A clean iris-led woody fragrance with a polished office profile.', 'men',
-        ARRAY['iris', 'neroli', 'amber', 'cedar'], ARRAY['office', 'interview', 'formal'], ARRAY['tropical', 'warm', 'mild'],
+        ARRAY['neroli', 'iris', 'amber', 'cedar'],
+        ARRAY['neroli'], ARRAY['iris'], ARRAY['amber', 'cedar'],
+        ARRAY['office', 'interview', 'formal'], ARRAY['tropical', 'warm', 'mild'],
         1850000, 4.4, 4.0, 3.0, 'https://example.com/datasets/scent-demo', 'public_dataset'
     ),
     (
         'bleu-de-chanel-edp', 'Chanel', 'Bleu de Chanel Eau de Parfum',
         'A woody aromatic fragrance suited to versatile day-to-evening wear.', 'men',
-        ARRAY['citrus', 'incense', 'cedar', 'amber'], ARRAY['office', 'date', 'formal'], ARRAY['tropical', 'warm', 'mild'],
+        ARRAY['citrus', 'incense', 'cedar', 'amber'],
+        ARRAY['citrus'], ARRAY['incense'], ARRAY['cedar', 'amber'],
+        ARRAY['office', 'date', 'formal'], ARRAY['tropical', 'warm', 'mild'],
         2450000, 4.6, 4.3, 3.6, 'https://example.com/datasets/scent-demo', 'public_dataset'
     ),
     (
         'versace-pour-homme', 'Versace', 'Pour Homme',
         'A bright citrus aromatic fragrance with a casual fresh character.', 'men',
-        ARRAY['citrus', 'neroli', 'musk', 'cedar'], ARRAY['office', 'gym', 'casual'], ARRAY['tropical', 'hot'],
+        ARRAY['citrus', 'neroli', 'cedar', 'musk'],
+        ARRAY['citrus', 'neroli'], ARRAY['cedar'], ARRAY['musk'],
+        ARRAY['office', 'gym', 'casual'], ARRAY['tropical', 'hot'],
         1050000, 4.2, 3.2, 2.8, 'https://example.com/datasets/scent-demo', 'public_dataset'
     ),
     (
         'dior-sauvage-edt', 'Dior', 'Sauvage Eau de Toilette',
         'A fresh aromatic amber fragrance with a high-energy profile.', 'men',
-        ARRAY['bergamot', 'pepper', 'ambroxan', 'lavender'], ARRAY['date', 'party', 'casual'], ARRAY['tropical', 'warm'],
+        ARRAY['bergamot', 'pepper', 'lavender', 'ambroxan'],
+        ARRAY['bergamot', 'pepper'], ARRAY['lavender'], ARRAY['ambroxan'],
+        ARRAY['date', 'party', 'casual'], ARRAY['tropical', 'warm'],
         1950000, 4.3, 4.1, 4.2, 'https://example.com/datasets/scent-demo', 'public_dataset'
     )
 ON CONFLICT (slug) DO NOTHING;

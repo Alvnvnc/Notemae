@@ -90,15 +90,14 @@ We also learned that a low score is not always an algorithm problem. Evaluation 
 
 ## Codex and GPT-5.6 Collaboration
 
-The majority of the core project was built in an official Codex session powered by GPT-5.6. We used Codex as a persistent engineering collaborator across the multi-service repository.
+ScentSphere's architecture, working prototype, and agent MVP were built in an official Codex session powered by GPT-5.6, and we returned to Codex to review the finished system. Between those anchor points, iteration passes were implemented with other development tools because of Codex usage limits. We disclose that split explicitly so the Codex contribution can be verified against the session log.
 
 ### Where Codex accelerated us
 
-- Converted a broad fragrance-consultant concept into typed service boundaries and an executable Docker Compose stack.
-- Followed data across frontend, backend, agent, ingestion, database, and evaluation code, reducing the manual cost of cross-service changes.
-- Implemented and refined the hybrid ranking path: taxonomy matching, semantic retrieval inputs, anchor feedback, bounded listwise reranking, Borda aggregation, and MMR.
-- Generated focused verification loops and helped diagnose concrete ranking regressions rather than only polishing prompts.
-- Accelerated documentation of API contracts, runtime fallbacks, source policy, and reproducible evaluation commands.
+1. **Architecture and working prototype.** Codex turned the initial concept into a runnable system: defining the service boundaries, connecting the frontend, FastAPI services, PostgreSQL/pgvector, and Docker Compose, and delivering the first end-to-end recommendation flow.
+2. **Agent MVP and engineering direction.** Codex completed the early recommendation-agent MVP — preference parsing, catalog constraint filtering, and the first scoring pass — and advised what to build next: which signals the agent lacked, what should stay deterministic, and where a bounded LLM step was worth adding.
+3. **Enhancement with other tools.** The subsequent iteration passes — stronger taxonomy-aware scoring, reference-fragrance feedback, bounded reranking, diversity controls, backend/frontend contract consistency, and evaluation tooling — were implemented with other development tools, following the structure and direction set in the Codex stages.
+4. **Verification back in Codex.** We brought the enhanced system back to Codex to review cross-service behavior against the original architecture, identify ranking regressions and edge cases, and confirm the changes stayed within the grounding and constraint boundaries the prototype defined.
 
 ### Where we made the key decisions
 
@@ -106,11 +105,11 @@ We decided the product problem, target audience, and Apps for Your Life position
 
 ### How GPT-5.6 contributed
 
-GPT-5.6 powered the reasoning inside Codex. It was especially useful for codebase-wide dependency tracing, comparing ranking designs, identifying hidden assumptions, implementing statistical evaluation, and keeping changes consistent across Python, SQL, Docker, and browser JavaScript. The project still required human judgment for product scope, domain labels, source licensing, safety boundaries, and what evidence was strong enough to report.
+GPT-5.6 powered the reasoning inside Codex at the points that shaped the project most: comparing architecture options for the service split, delivering the runnable prototype and agent MVP, advising which ranking signals to add next, and reviewing the enhanced system for regressions across Python, SQL, Docker, and browser JavaScript. The project still required human judgment for product scope, domain labels, source licensing, safety boundaries, and what evidence was strong enough to report.
 
-### Runtime disclosure
+### Build and runtime disclosure
 
-Codex and GPT-5.6 were used to build the project. The current application runtime uses Qwen through an OpenAI-compatible API for preference extraction, embeddings, bounded reranking, and explanations. We disclose this distinction explicitly rather than implying GPT-5.6 is the deployed inference provider.
+Codex and GPT-5.6 anchored the build: architecture, prototype, agent MVP, engineering direction, and final review. Intermediate enhancement passes used other development tools within the structure Codex established. The current application runtime uses Qwen through an OpenAI-compatible API for preference extraction, embeddings, bounded reranking, and explanations. We disclose both distinctions explicitly rather than implying GPT-5.6 built every line or is the deployed inference provider.
 
 ## Built With
 
@@ -136,7 +135,7 @@ The Devpost form requires the Session ID from the Codex conversation where most 
 4. Replace `PENDING_CODEX_FEEDBACK_SESSION_ID` at the top of this document.
 5. Paste exactly that ID into the Devpost `/feedback Codex Session ID` field.
 
-Do not substitute an OpenCode session ID, a ChatGPT share link, a random UUID, or the ID of a short submission-writing session. Devpost asks for the session where the majority of core functionality was built.
+Do not substitute an OpenCode session ID, a ChatGPT share link, a random UUID, or the ID of a short submission-writing session. Devpost asks for the session where the majority of core functionality was built — for this project, that is the Codex session that produced the architecture, prototype, and agent MVP. Use that genuine session even if it is not large; its contents must match what the README claims Codex did.
 
 ## Demo Video Script
 
@@ -178,7 +177,7 @@ Visual: Show the official Codex session, a representative cross-service implemen
 
 Voiceover:
 
-> We built the majority of the core implementation with Codex powered by GPT-5.6. Codex accelerated cross-service tracing and implementation across FastAPI, SQL, Docker, evaluation, and the browser UI. We made the key decisions: catalog grounding, deterministic constraints, reviewed data sources, bounded LLM judgment, and measurable ranking quality. GPT-5.6 helped turn those decisions into consistent code and verification rather than replacing our product judgment.
+> Codex, powered by GPT-5.6, anchored this project at three points. It built the architecture and the first working end-to-end prototype, completed the recommendation agent's MVP while advising what to add next, and reviewed the final system for regressions and edge cases. Because of usage limits, we enhanced the middle iterations with other development tools — always inside the structure Codex defined. The key decisions stayed ours: catalog grounding, deterministic constraints, source policy, and what evidence to trust.
 
 ### 1:58-2:25 - Evaluation and honesty
 
@@ -198,7 +197,9 @@ Voiceover:
 
 ## Final Compliance Checklist
 
-- [ ] Working project is publicly accessible or straightforward for judges to run.
+- [ ] Working project is publicly accessible or straightforward for judges to run, free of charge, through the end of the Judging Period (August 5, 2026).
+- [ ] Repository is public **with a license file**, or private and shared with `testing@devpost.com` and `build-week-event@openai.com`. (The repo currently has no `LICENSE` file — add one, e.g. MIT, before submitting publicly.)
+- [ ] All submission materials are in English (or include English translations).
 - [ ] Track is set to `Apps for Your Life`.
 - [ ] Devpost project description explains what was created and how it works.
 - [ ] Public YouTube demo is shorter than three minutes.
@@ -207,11 +208,19 @@ Voiceover:
 - [ ] Public repository contains setup instructions and sample input.
 - [ ] Repository contains no `.env`, API key, service secret, or private data.
 - [ ] README identifies where Codex accelerated work and where human decisions were made.
-- [ ] Runtime Qwen and build-time GPT-5.6 roles are not conflated.
+- [ ] README, Devpost description, and video claims about Codex match what the `/feedback` session log actually shows (no "majority built in Codex" claims anywhere).
+- [ ] Runtime Qwen and build-time GPT-5.6 roles are not conflated, and the use of other development tools for enhancement passes is disclosed.
 - [ ] `/feedback` Session ID comes from the original core Codex session.
 - [ ] Historical single-run benchmark is not described as end-to-end proof.
 - [ ] Development and holdout evaluation results are kept separate.
 - [ ] All `PENDING` values in this document have been replaced.
 - [ ] Deadline and eligibility are rechecked in the logged-in Devpost form before final submission.
 
-Devpost currently lists the deadline as July 21, 2026 at 5:00 PM PDT. Confirm the displayed deadline before submitting.
+Devpost currently lists the deadline as July 21, 2026 at 5:00 PM PDT (Submission Period: July 13–21, 2026). Confirm the displayed deadline before submitting.
+
+Verified against the official rules (openai.devpost.com/rules, checked July 20, 2026):
+
+- The README must describe the Codex collaboration: where Codex accelerated the workflow, where key product/engineering/design decisions were made, and how GPT-5.6 and Codex contributed to the final result. The root `README.md` now covers this in four stages.
+- The demo video must be under three minutes, public on YouTube, and include a clear demo **with audio** covering what was built and how Codex and GPT-5.6 were used.
+- Judging is two-stage: a pass/fail viability check, then four equally weighted criteria — Technological Implementation (how thoroughly and skillfully the project uses Codex), Design (a complete, coherent product experience), Potential Impact, and Quality of the Idea.
+- All commits in this repository date from July 19–20, 2026, inside the Submission Period, so no prior-work/new-work documentation for pre-existing projects is required.

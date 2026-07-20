@@ -16,6 +16,20 @@ of the top match.
 from . import taxonomy
 from .models import FragranceCandidate, MatchResult, RecommendationProfile
 
+
+# How the "notes" criterion below splits its budget. An exact note match is
+# worth as much as the other three routes combined, so a perfume that really
+# lists the requested note can never be outranked by one that merely shares
+# its family. The four shares sum to 100 and are read as percentages of
+# WEIGHTS["notes"], which keeps the criterion's weight against occasion,
+# budget and the rest unchanged.
+NOTE_MATCH_SHARES = {
+    "exact": 50.0,
+    "similar": 20.0,
+    "family": 15.0,
+    "character": 15.0,
+}
+
 WEIGHTS = {
     "notes": 30.0,
     "families": 10.0,
@@ -32,6 +46,22 @@ BUDGET_TOLERANCE = 1.15
 HARD_FILTER_PENALTY = 30.0
 DISLIKE_ANCHOR_PENALTY = 15.0
 MISSING_NOTES_PENALTY = 5.0
+# An avoided note itself is a hard filter. Its close substitutes are not
+# disqualifying — someone who avoids vanilla can still tolerate tonka — but
+# they should cost the candidate something.
+AVOIDED_NEIGHBOUR_PENALTY = 8.0
+# How much of that penalty each tier carries. This is the one place where the
+# pyramid genuinely belongs in the score: a relative of an avoided note in the
+# dry-down is on the wearer's skin all evening, while the same material in the
+# opening is gone before they reach the office.
+#
+# Note the asymmetry with *wanted* notes, which are deliberately NOT scaled by
+# tier. Where a material sits is a property of the material — bergamot is only
+# ever an opening note — so docking a citrus perfume for putting bergamot on
+# top would penalise every citrus perfume ever made. Being stuck with
+# something you asked to avoid is a real cost; getting what you asked for in
+# the only place it can exist is not a defect.
+AVOIDED_TIER_SCALE = {"top": 0.4, "heart": 0.7, "base": 1.0}
 RATING_PRIOR = 3.5
 MMR_LAMBDA = 0.75
 # cosine similarities from text embeddings rarely span [0, 1]; rescale the
@@ -48,6 +78,143 @@ PERFORMANCE_BANDS = {
 def candidate_taste_terms(candidate: FragranceCandidate) -> set[str]:
     notes = set(taxonomy.canonical_notes(candidate.notes))
     return notes | taxonomy.family_profile(notes)
+
+
+def candidate_pyramid(
+    candidate: FragranceCandidate,
+) -> tuple[dict[str, list[str]], bool]:
+    """The candidate's tiers, stated if the catalog knows them."""
+    return taxonomy.resolve_pyramid(
+        candidate.notes,
+        top=candidate.top_notes,
+        heart=candidate.heart_notes,
+        base=candidate.base_notes,
+    )
+
+
+def score_note_match(
+    preferred: list[str],
+    candidate_notes: set[str],
+    candidate_families: set[str],
+    candidate_traits: set[str],
+    candidate_tiers: dict[str, str] | None = None,
+    pyramid_stated: bool = False,
+) -> tuple[dict[str, float], list[str], list[str]]:
+    """Grade one wanted note list along four increasingly loose routes.
+
+    Each preferred note earns credit independently on every route it clears,
+    and the routes nest: an exact match also counts as its own best
+    substitute, shares its families, and carries its character. So exact
+    matching dominates by construction rather than by tuning.
+
+    The pyramid changes no number here — see AVOIDED_TIER_SCALE for why —
+    but it does change what the wearer is told: an exact match is named with
+    the tier it lands in, and a match that lives entirely in the opening is
+    called out, because "it smells like what you asked for" and "it smells
+    like what you asked for for twenty minutes" are different products.
+    Tiers are only narrated when the catalog actually stated them; an
+    inferred pyramid ranks but never speaks.
+
+    Returns (breakdown keyed by route plus the "notes" total, reasons,
+    cautions).
+    """
+    tiers = candidate_tiers or {}
+    shares = {route: 0.0 for route in NOTE_MATCH_SHARES}
+    exact_hits: list[str] = []
+    similar_hits: list[str] = []
+    family_hits: list[str] = []
+    exact_tiers: set[str] = set()
+
+    for note in preferred:
+        note_families = taxonomy.families_for_note(note)
+        note_traits = taxonomy.traits_for_note(note)
+        substitutes = taxonomy.similar_notes(note) & candidate_notes
+        is_exact = note in candidate_notes
+
+        if is_exact:
+            tier = tiers.get(note)
+            if tier:
+                exact_tiers.add(tier)
+            label = taxonomy.TIER_LABELS.get(tier or "")
+            exact_hits.append(f"{note} ({label})" if label and pyramid_stated else note)
+            shares["exact"] += 1.0
+            shares["similar"] += 1.0
+        elif substitutes:
+            similar_hits.append(f"{note}≈{sorted(substitutes)[0]}")
+            shares["similar"] += 1.0
+
+        shared_families = note_families & candidate_families
+        if note_families:
+            shares["family"] += len(shared_families) / len(note_families)
+        if shared_families and not is_exact and not substitutes:
+            family_hits.append(f"{note}≈{sorted(shared_families)[0]}")
+
+        if note_traits:
+            shares["character"] += len(note_traits & candidate_traits) / len(
+                note_traits
+            )
+
+    count = max(len(preferred), 1)
+    breakdown = {
+        f"notes_{route}": round(
+            shares[route] / count * NOTE_MATCH_SHARES[route] / 100 * WEIGHTS["notes"], 1
+        )
+        for route in NOTE_MATCH_SHARES
+    }
+    breakdown["notes"] = round(sum(breakdown.values()), 1)
+
+    reasons: list[str] = []
+    cautions: list[str] = []
+    if exact_hits:
+        reasons.append(f"preferred notes: {', '.join(exact_hits)}")
+    if pyramid_stated and exact_tiers:
+        if exact_tiers == {"top"}:
+            cautions.append(
+                "the notes you asked for are all in the opening, so they fade "
+                "within about an hour"
+            )
+        elif "base" in exact_tiers:
+            reasons.append("your notes carry through into the dry-down")
+    if similar_hits:
+        reasons.append(f"close substitutes: {', '.join(similar_hits)}")
+    if family_hits:
+        reasons.append(f"same-family notes: {', '.join(family_hits)}")
+    if not exact_hits and not similar_hits and not family_hits:
+        cautions.append("none of the requested notes or their families match")
+    return breakdown, reasons, cautions
+
+
+def avoided_neighbour_penalty(
+    candidate_notes: set[str],
+    avoided_notes: set[str],
+    candidate_tiers: dict[str, str] | None = None,
+) -> tuple[float, list[str]]:
+    """Cost a candidate for carrying close relatives of an avoided note.
+
+    Scaled by how long the wearer is stuck with it: a relative in the
+    dry-down costs the full penalty, one in the opening a fraction of it.
+    Where a candidate has several relatives of the same avoided note, the
+    longest-lasting one sets the cost.
+    """
+    if not avoided_notes or not candidate_notes:
+        return 0.0, []
+    tiers = candidate_tiers or {}
+    flagged: list[str] = []
+    hit = 0.0
+    for avoided in avoided_notes:
+        neighbours = taxonomy.similar_notes(avoided) & candidate_notes
+        if not neighbours:
+            continue
+        # sorted() first: several relatives can share the worst tier, and the
+        # flagged caution must not depend on set iteration order
+        worst = max(
+            sorted(neighbours),
+            key=lambda note: AVOIDED_TIER_SCALE.get(tiers.get(note, "heart"), 0.7),
+        )
+        hit += AVOIDED_TIER_SCALE.get(tiers.get(worst, "heart"), 0.7)
+        flagged.append(f"{worst} is close to {avoided}")
+    penalty = round(hit / len(avoided_notes) * AVOIDED_NEIGHBOUR_PENALTY, 1)
+    return penalty, flagged
 
 
 def hard_filter_failures(
@@ -82,6 +249,8 @@ def score_candidate(
     candidate_notes = taxonomy.canonical_notes(candidate.notes)
     candidate_note_set = set(candidate_notes)
     candidate_families = taxonomy.family_profile(candidate_notes)
+    pyramid, pyramid_stated = candidate_pyramid(candidate)
+    candidate_tiers = taxonomy.tier_index(pyramid)
     description_text = candidate.description.lower()
     breakdown: dict[str, float] = {}
     reasons: list[str] = []
@@ -102,26 +271,18 @@ def score_candidate(
 
     if profile.preferred_notes:
         possible += WEIGHTS["notes"]
-        preferred = taxonomy.canonical_notes(profile.preferred_notes)
-        exact = [note for note in preferred if note in candidate_note_set]
-        family_matches: list[str] = []
-        credit = float(len(exact))
-        for note in preferred:
-            if note in candidate_note_set:
-                continue
-            shared_families = taxonomy.families_for_note(note) & candidate_families
-            if shared_families:
-                credit += 0.5
-                family_matches.append(f"{note}≈{sorted(shared_families)[0]}")
-        ratio = min(credit / max(len(preferred), 1), 1.0)
-        breakdown["notes"] = round(ratio * WEIGHTS["notes"], 1)
-        earned += breakdown["notes"]
-        if exact:
-            reasons.append(f"preferred notes: {', '.join(exact)}")
-        if family_matches:
-            reasons.append(f"same-family notes: {', '.join(family_matches)}")
-        if not exact and not family_matches:
-            cautions.append("none of the requested notes or their families match")
+        note_breakdown, note_reasons, note_cautions = score_note_match(
+            taxonomy.canonical_notes(profile.preferred_notes),
+            candidate_note_set,
+            candidate_families,
+            taxonomy.trait_profile(candidate_notes),
+            candidate_tiers,
+            pyramid_stated,
+        )
+        breakdown.update(note_breakdown)
+        earned += note_breakdown["notes"]
+        reasons.extend(note_reasons)
+        cautions.extend(note_cautions)
 
     if profile.preferred_families:
         possible += WEIGHTS["families"]
@@ -199,6 +360,16 @@ def score_candidate(
                     f"resembles {worst_anchor.brand} {worst_anchor.name}, "
                     "which you disliked"
                 )
+
+    if profile.avoid_notes:
+        avoided_notes, _ = taxonomy.expand_avoided(profile.avoid_notes)
+        penalty, flagged = avoided_neighbour_penalty(
+            candidate_note_set, avoided_notes, candidate_tiers
+        )
+        if penalty:
+            breakdown["avoided_neighbour_penalty"] = -penalty
+            earned -= penalty
+            cautions.extend(flagged)
 
     if profile.occasion:
         possible += WEIGHTS["occasion"]

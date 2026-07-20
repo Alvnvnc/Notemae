@@ -11,11 +11,14 @@ the deterministic order.
 
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
 from openai import APIError, OpenAI
 
+from . import taxonomy
 from .config import settings
 from .models import MatchResult, RecommendationProfile
+from .usage import model_usage
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +28,9 @@ You receive the user's preference profile and a numbered candidate list with
 catalog facts and a deterministic score. Judge overall taste fit holistically:
 scent character versus the request, occasion and climate fit, references the
 user likes or dislikes, and value for the budget. Use only supplied facts.
+Where "note_pyramid" is present, weigh where the user's notes sit in it: a
+wanted note in the base lasts all day, the same note in the top is gone in an
+hour. A null "note_pyramid" means the arrangement is unknown, not flat.
 Return JSON only: {"ranking": ["slug-best", "slug-next", ...]} containing every
 candidate slug exactly once, best fit first.
 """.strip()
@@ -37,6 +43,9 @@ def candidate_digest(match: MatchResult) -> dict[str, object]:
         "brand": fragrance.brand,
         "name": fragrance.name,
         "notes": fragrance.notes,
+        "note_pyramid": taxonomy.stated_pyramid(
+            fragrance.top_notes, fragrance.heart_notes, fragrance.base_notes
+        ),
         "occasions": fragrance.occasions,
         "climates": fragrance.climates,
         "price_idr": fragrance.price_idr,
@@ -54,6 +63,14 @@ def request_vote(
     digests: list[dict[str, object]],
     known_slugs: list[str],
 ) -> list[str] | None:
+    if not model_usage.reserve(
+        "rerank",
+        settings.qwen_max_calls_per_hour,
+        settings.redis_url,
+        settings.redis_key_prefix,
+    ):
+        logger.warning("Qwen rerank skipped: hourly model-call budget exhausted")
+        return None
     try:
         completion = client.chat.completions.create(
             model=settings.qwen_model,
@@ -74,10 +91,13 @@ def request_vote(
             ],
             response_format={"type": "json_object"},
             extra_body=settings.structured_extra_body,
+            max_tokens=settings.qwen_max_output_tokens,
         )
+        model_usage.success(completion)
         parsed = json.loads(completion.choices[0].message.content)
         ranking = [slug for slug in parsed.get("ranking", []) if slug in known_slugs]
     except (APIError, AttributeError, IndexError, TypeError, ValueError) as error:
+        model_usage.failure("rerank")
         logger.warning("Qwen rerank vote failed: %s", error)
         return None
     if not ranking:
@@ -111,14 +131,14 @@ def consensus_rerank(
     digests = [candidate_digest(match) for match in pool]
     known_slugs = [match.fragrance.slug for match in pool]
 
-    votes = [
-        vote
-        for vote in (
-            request_vote(client, profile, digests, known_slugs)
+    # Votes are independent samples, so issue them concurrently: the pass
+    # costs one round trip instead of ``qwen_rerank_votes`` of them.
+    with ThreadPoolExecutor(max_workers=settings.qwen_rerank_votes) as executor:
+        futures = [
+            executor.submit(request_vote, client, profile, digests, known_slugs)
             for _ in range(settings.qwen_rerank_votes)
-        )
-        if vote
-    ]
+        ]
+        votes = [vote for vote in (future.result() for future in futures) if vote]
     if not votes:
         return survivors
 

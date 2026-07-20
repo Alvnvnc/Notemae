@@ -37,7 +37,13 @@ class SourceRecord(BaseModel):
     description: str = Field(default="", max_length=2000)
     gender: str = Field(default="unisex", max_length=30)
     release_year: int | None = Field(default=None, ge=1800, le=2100)
+    # `notes` is derived from the three tiers during normalization whenever a
+    # source states them, so a caller only has to send the pyramid. Sources
+    # that have no pyramid at all keep sending `notes` on its own.
     notes: list[str] = Field(default_factory=list, max_length=50)
+    top_notes: list[str] = Field(default_factory=list, max_length=25)
+    heart_notes: list[str] = Field(default_factory=list, max_length=25)
+    base_notes: list[str] = Field(default_factory=list, max_length=25)
     occasions: list[str] = Field(default_factory=list, max_length=20)
     climates: list[str] = Field(default_factory=list, max_length=20)
     price_idr: int | None = Field(default=None, ge=0)

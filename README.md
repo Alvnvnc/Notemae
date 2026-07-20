@@ -46,15 +46,17 @@ Approved public dataset / official API / licensed feed
 
 ## Building with Codex and GPT-5.6
 
-The majority of ScentSphere's core implementation was developed in an official Codex session powered by GPT-5.6. Codex was used as an engineering collaborator across the repository, not as a one-shot code generator.
+ScentSphere's architecture, working prototype, and agent MVP were built in an official Codex session powered by GPT-5.6, and we returned to Codex to review the finished system. In between those anchor points, iteration passes were implemented with other development tools because of Codex usage limits. We disclose that split explicitly so the Codex contribution can be verified against the session log.
 
 ### Where Codex accelerated the workflow
 
-- Mapped the product idea into four runnable boundaries: ingestion, catalog backend, recommendation agent, and browser UI.
-- Traced and implemented typed payloads across FastAPI, PostgreSQL/pgvector, Docker Compose, and the frontend instead of optimizing one isolated file at a time.
-- Accelerated implementation and review of taxonomy-aware scoring, Rocchio reference feedback, listwise reranking, Borda aggregation, and MMR diversity.
-- Built evaluation tooling around a hand-labeled persona set, then helped inspect regressions rather than relying on a few persuasive demos.
-- Shortened debugging loops by reading the relevant call path, editing the smallest responsible layer, and running focused verification after each change.
+**1. Architecture and working prototype.** Codex turned the initial fragrance-consultant concept into a runnable system: it defined the service boundaries (ingestion, catalog backend, recommendation agent, browser UI), wired the frontend, FastAPI services, PostgreSQL/pgvector, and Docker Compose together, and delivered the first end-to-end recommendation flow from a browser request to a catalog-backed answer.
+
+**2. Agent MVP and engineering direction.** Codex completed the early recommendation-agent MVP — preference parsing, catalog constraint filtering, and the first scoring pass — and acted as an engineering advisor on what to build next: which signals the agent lacked, what should stay deterministic, and where a bounded LLM step was worth adding. Those proposals shaped the roadmap we executed afterward.
+
+**3. Enhancement with other tools.** The subsequent iteration passes — strengthening taxonomy-aware scoring, reference-fragrance feedback, bounded reranking, diversity controls, backend/frontend contract consistency, and evaluation tooling — were implemented with other development tools, following the structure and direction established in the Codex stages above.
+
+**4. Verification back in Codex.** We brought the enhanced system back to Codex to check it: reviewing cross-service behavior against the original architecture, identifying ranking regressions and edge cases, and validating that the changes stayed within the grounding and constraint boundaries the prototype defined.
 
 ### Key decisions we made
 
@@ -64,11 +66,13 @@ The majority of ScentSphere's core implementation was developed in an official C
 - **Data provenance matters.** The ingestion boundary accepts only reviewed public datasets, official APIs, or licensed feeds and preserves source URLs.
 - **Quality must be measured.** We selected nDCG@3 as the primary offline ranking metric and also track hit@1, constraint violations, diversity, latency, stochastic run variance, and judge-label agreement.
 
-GPT-5.6 supplied the codebase-level reasoning inside Codex: comparing architecture options, following data across services, identifying weak assumptions, and turning decisions into tested implementation. We retained responsibility for the product scope, source policy, grounding boundary, ranking tradeoffs, labels, and final acceptance of changes.
+### How GPT-5.6 and Codex contributed to the final result
 
-### Runtime model disclosure
+GPT-5.6 inside Codex supplied the codebase-level reasoning at the points that shaped the project most: the service architecture, the first runnable prototype, the agent MVP, the roadmap advice on what to add next, and the final regression review. The enhancement work in between used other tools, but it was built on the structure Codex established and was checked back in Codex before we accepted it. Codex proposed engineering additions; we made the final calls and retained responsibility for the product scope, source policy, grounding boundary, ranking tradeoffs, evaluation labels, and acceptance of every change.
 
-GPT-5.6 and Codex were the build-time engineering tools required by OpenAI Build Week. The running ScentSphere demo currently uses Qwen through an OpenAI-compatible API for preference extraction, embeddings, bounded reranking, and natural-language explanations. This distinction is intentional and is disclosed so judges can separate how the project was built from which provider powers the demo at runtime.
+### Build and runtime tooling disclosure
+
+Codex and GPT-5.6 anchored the build as described above; other development tools were used for the intermediate enhancement passes. At runtime, the ScentSphere demo uses Qwen through an OpenAI-compatible API for preference extraction, embeddings, bounded reranking, and natural-language explanations. Both distinctions are disclosed intentionally so judges can see exactly which parts of the project were built in Codex and which provider powers the demo.
 
 The copy-ready Devpost description, demo voiceover, compliance checklist, and `/feedback` instructions are in [`docs/devpost-submission.md`](docs/devpost-submission.md).
 

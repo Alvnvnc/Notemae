@@ -21,6 +21,32 @@ def normalize_tags(tags: list[str]) -> list[str]:
     return normalized
 
 
+TIER_FIELDS = ("top_notes", "heart_notes", "base_notes")
+
+
+def normalize_pyramid(record: SourceRecord) -> dict[str, list[str]]:
+    """Normalize the three tiers and derive the flat ``notes`` union.
+
+    The union is computed here, opening first, so the two representations
+    cannot drift: whatever a source claims in ``notes`` is ignored the
+    moment it also states a pyramid. Sources with no pyramid keep their flat
+    list untouched and leave every tier empty.
+    """
+    tiers: dict[str, list[str]] = {}
+    union: list[str] = []
+    for field in TIER_FIELDS:
+        tier: list[str] = []
+        for note in normalize_tags(getattr(record, field)):
+            # a note claimed in two tiers belongs to the first one it appears
+            # in, which is where the wearer meets it
+            if note in union:
+                continue
+            union.append(note)
+            tier.append(note)
+        tiers[field] = tier
+    return {"notes": union or normalize_tags(record.notes), **tiers}
+
+
 def normalize_record(record: SourceRecord) -> dict[str, object]:
     identity = f"-{record.source_record_id}" if record.source_record_id else ""
     return {
@@ -30,7 +56,7 @@ def normalize_record(record: SourceRecord) -> dict[str, object]:
         "description": record.description.strip(),
         "gender": record.gender.strip().lower(),
         "release_year": record.release_year,
-        "notes": normalize_tags(record.notes),
+        **normalize_pyramid(record),
         "occasions": normalize_tags(record.occasions),
         "climates": normalize_tags(record.climates),
         "price_idr": record.price_idr,

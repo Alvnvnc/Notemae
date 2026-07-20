@@ -19,6 +19,18 @@ services:
       timeout: 3s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   backend:
     build: ./backend
     restart: unless-stopped
@@ -43,10 +55,17 @@ services:
       QWEN_PROFILE_MODEL: ${QWEN_PROFILE_MODEL:-}
       QWEN_EMBED_MODEL: ${QWEN_EMBED_MODEL:-text-embedding-v4}
       QWEN_EMBEDDING_DIMENSIONS: ${QWEN_EMBEDDING_DIMENSIONS:-1024}
-      QWEN_THINKING: ${QWEN_THINKING:-1}
-      QWEN_RERANK_ENABLED: ${QWEN_RERANK_ENABLED:-1}
+      QWEN_THINKING: ${QWEN_THINKING:-0}
+      QWEN_RERANK_ENABLED: ${QWEN_RERANK_ENABLED:-0}
+      QWEN_MAX_OUTPUT_TOKENS: ${QWEN_MAX_OUTPUT_TOKENS:-320}
+      QWEN_MAX_CALLS_PER_HOUR: ${QWEN_MAX_CALLS_PER_HOUR:-120}
+      REDIS_URL: redis://redis:6379/0
+      REDIS_KEY_PREFIX: ${REDIS_KEY_PREFIX:-scentsphere-agent}
     ports:
       - "127.0.0.1:8001:8001"
+    depends_on:
+      redis:
+        condition: service_healthy
 
   scraping:
     build: ./scraping
@@ -91,3 +110,4 @@ services:
 volumes:
   postgres_data:
   scraping_data:
+  redis_data:

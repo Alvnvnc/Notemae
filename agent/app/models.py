@@ -16,7 +16,13 @@ class FragranceCandidate(BaseModel):
     description: str
     gender: str
     release_year: int | None = None
+    # `notes` is the ordered union of the tiers below. The tiers are empty
+    # for records ingested before the pyramid existed, which is why nothing
+    # here may assume they are populated — see taxonomy.resolve_pyramid.
     notes: list[str]
+    top_notes: list[str] = Field(default_factory=list)
+    heart_notes: list[str] = Field(default_factory=list)
+    base_notes: list[str] = Field(default_factory=list)
     occasions: list[str]
     climates: list[str]
     price_idr: int | None = None
@@ -26,6 +32,50 @@ class FragranceCandidate(BaseModel):
     source_url: str
     source_type: str
     semantic_similarity: float | None = Field(default=None, ge=-1, le=1)
+
+
+class NoteInsight(BaseModel):
+    """One picked note, expanded through the taxonomy."""
+
+    input: str
+    name: str
+    corrected: bool = False
+    known: bool = True
+    family: str | None = None
+    families: list[str] = Field(default_factory=list)
+    traits: list[str] = Field(default_factory=list)
+    similar_notes: list[str] = Field(default_factory=list)
+    # the tier this material naturally occupies, None if unclassified
+    volatility: str | None = None
+
+
+class ScentProfile(BaseModel):
+    """Deterministic reading of what the picked notes add up to."""
+
+    notes: list[NoteInsight] = Field(default_factory=list)
+    # the picked notes grouped by tier, so an interface can lay them out as a
+    # pyramid. Ranking is deliberately NOT weighted by tier: this describes
+    # what the wearer asked for, not what a perfume would smell like in hour
+    # three, and weighting a mirror of their own choice would distort it.
+    pyramid: dict[str, list[str]] = Field(default_factory=dict)
+    families: list[str] = Field(default_factory=list)
+    traits: list[str] = Field(default_factory=list)
+    dominant_traits: list[str] = Field(default_factory=list)
+    corrections: dict[str, str] = Field(default_factory=dict)
+    unrecognized: list[str] = Field(default_factory=list)
+    summary: str = ""
+
+
+class NoteProfileRequest(BaseModel):
+    notes: list[str] = Field(min_length=1, max_length=15)
+    avoid_notes: list[str] = Field(default_factory=list, max_length=15)
+
+
+class NoteProfileResponse(BaseModel):
+    profile: ScentProfile
+    avoided: ScentProfile | None = None
+    narrative: str
+    generated_by: GeneratedBy
 
 
 class RecommendationProfile(BaseModel):
@@ -78,12 +128,34 @@ class RecommendationRequest(BaseModel):
     )
 
 
+class RankRequest(RecommendationRequest):
+    """Ranking-only variant of :class:`RecommendationRequest`.
+
+    ``rerank`` lets the caller trade the LLM consensus pass (a few seconds)
+    for an instant deterministic ordering — the streaming endpoint asks for
+    the fast ordering first so the browser can paint matches immediately.
+    """
+
+    rerank: bool = True
+
+
 class MatchResult(BaseModel):
     fragrance: FragranceCandidate
     score: int = Field(ge=0, le=100)
     reasons: list[str]
     cautions: list[str]
     score_breakdown: dict[str, float] = Field(default_factory=dict)
+
+
+class RankResponse(BaseModel):
+    matches: list[MatchResult]
+    reranked: bool
+
+
+class ExplainRequest(BaseModel):
+    profile: RecommendationProfile
+    recommendation: MatchResult
+    alternatives: list[MatchResult] = Field(default_factory=list, max_length=5)
 
 
 class RecommendationResponse(BaseModel):

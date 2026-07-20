@@ -17,18 +17,38 @@ class Settings(BaseSettings):
     qwen_profile_model: str | None = None
     qwen_embed_model: str = "text-embedding-v4"
     qwen_embedding_dimensions: int = Field(default=1024, ge=64, le=2048)
-    qwen_thinking: bool = True
+    # Explanations are grounded summaries, not long-form reasoning tasks. Keep
+    # reasoning off by default so it cannot silently consume a large token
+    # budget on every recommendation.
+    qwen_thinking: bool = False
     qwen_thinking_budget: int = Field(default=600, ge=100, le=4000)
-    qwen_rerank_enabled: bool = True
-    qwen_rerank_votes: int = Field(default=2, ge=1, le=5)
-    qwen_rerank_pool: int = Field(default=10, ge=3, le=20)
+    # Reranking is optional quality polish. Deterministic ranking is the
+    # production default because every vote is a separate billable request.
+    qwen_rerank_enabled: bool = False
+    qwen_rerank_votes: int = Field(default=1, ge=1, le=5)
+    qwen_rerank_pool: int = Field(default=6, ge=3, le=20)
     qwen_rerank_weight: float = Field(default=0.3, ge=0.0, le=0.6)
     qwen_rerank_temperature: float = Field(default=0.7, ge=0.0, le=1.5)
+    qwen_max_output_tokens: int = Field(default=320, ge=64, le=2000)
+    qwen_max_calls_per_hour: int = Field(default=120, ge=0, le=100_000)
+    model_cache_ttl_seconds: int = Field(default=3600, ge=0, le=86400)
+    model_cache_max_entries: int = Field(default=256, ge=0, le=4096)
+    redis_url: str | None = None
+    redis_key_prefix: str = "scentsphere-agent"
 
     @property
     def structured_extra_body(self) -> dict:
         """DashScope needs enable_thinking=False to force structured JSON;
         other OpenAI-compatible providers (e.g. Fireworks) reject the field."""
+        if "dashscope" in self.qwen_base_url:
+            return {"enable_thinking": False}
+        return {}
+
+    @property
+    def streaming_extra_body(self) -> dict:
+        """Thinking disabled for streamed prose: reasoning tokens are never
+        surfaced, so leaving it on only delays the first visible character by
+        the whole thinking budget."""
         if "dashscope" in self.qwen_base_url:
             return {"enable_thinking": False}
         return {}

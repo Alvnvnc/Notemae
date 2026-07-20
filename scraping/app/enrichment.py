@@ -33,7 +33,14 @@ If and only if you recognize THIS exact fragrance product, provide catalog data.
 Rules:
 - If you are unsure which exact product this is, or you do not know its note
   pyramid, return {{"known": false}}. Never guess notes.
-- notes: 3-10 lowercase note or accord names (e.g. "bergamot", "vanilla").
+- top_notes / heart_notes / base_notes: the product's published pyramid, as
+  lowercase note or accord names (e.g. "bergamot", "vanilla"). Each note
+  belongs to exactly one tier; do not repeat a note across tiers. 3-10 notes
+  in total across the three tiers.
+- If you know the notes but genuinely do not know how they are arranged in
+  the pyramid, leave heart_notes and base_notes empty and put every note in
+  top_notes ONLY IF the product really is a linear composition; otherwise
+  return {{"known": false}} rather than inventing an arrangement.
 - occasions: subset of {occasions}.
 - climates: subset of {climates}.
 - gender: "men", "women" or "unisex".
@@ -42,7 +49,8 @@ Rules:
 - confidence: 0.0-1.0, your certainty these facts describe this exact product.
 
 Return JSON exactly like:
-{{"known": true, "confidence": 0.9, "notes": ["..."], "occasions": ["..."],
+{{"known": true, "confidence": 0.9, "top_notes": ["..."],
+"heart_notes": ["..."], "base_notes": ["..."], "occasions": ["..."],
 "climates": ["..."], "gender": "unisex", "release_year": null,
 "description": "..."}}"""
 
@@ -116,6 +124,44 @@ def clean_tags(values: Any, allowed: tuple[str, ...] | None, cap: int) -> list[s
     return cleaned[:cap]
 
 
+TIER_KEYS = ("top_notes", "heart_notes", "base_notes")
+MAX_NOTES = 15
+
+
+def clean_pyramid(payload: dict[str, Any]) -> dict[str, list[str]]:
+    """Read the model's pyramid into tiers plus the flat union.
+
+    A note claimed in two tiers is kept in the more volatile one, which is
+    where the wearer meets it first. The flat ``notes`` list is derived here
+    rather than read from the model, so the union can never disagree with
+    the tiers it is supposed to summarize.
+
+    Models still occasionally answer with the old flat ``notes`` key; that
+    is accepted and simply yields empty tiers, the same state as any record
+    ingested before the pyramid existed.
+    """
+    tiers: dict[str, list[str]] = {}
+    flat: list[str] = []
+    for key in TIER_KEYS:
+        tier: list[str] = []
+        for note in clean_tags(payload.get(key), None, MAX_NOTES):
+            if note in flat:
+                continue
+            flat.append(note)
+            tier.append(note)
+        tiers[key] = tier
+    if not flat:
+        flat = clean_tags(payload.get("notes"), None, MAX_NOTES)
+    if len(flat) > MAX_NOTES:
+        surplus = set(flat[MAX_NOTES:])
+        flat = flat[:MAX_NOTES]
+        tiers = {
+            key: [note for note in tier if note not in surplus]
+            for key, tier in tiers.items()
+        }
+    return {"notes": flat, **tiers}
+
+
 async def enrich_record(
     client: httpx.AsyncClient, record: dict[str, Any]
 ) -> dict[str, Any] | None:
@@ -136,8 +182,8 @@ async def enrich_record(
         confidence = float(payload.get("confidence", 0))
     except (TypeError, ValueError):
         return None
-    notes = clean_tags(payload.get("notes"), None, 15)
-    if confidence < settings.enrichment_min_confidence or len(notes) < 3:
+    pyramid = clean_pyramid(payload)
+    if confidence < settings.enrichment_min_confidence or len(pyramid["notes"]) < 3:
         return None
 
     release_year = payload.get("release_year")
@@ -147,7 +193,7 @@ async def enrich_record(
     description = " ".join(str(payload.get("description", "")).split())[:2000]
     return {
         "confidence": confidence,
-        "notes": notes,
+        **pyramid,
         "occasions": clean_tags(payload.get("occasions"), ALLOWED_OCCASIONS, 6),
         "climates": clean_tags(payload.get("climates"), ALLOWED_CLIMATES, 5),
         "gender": gender if gender in ALLOWED_GENDERS else None,

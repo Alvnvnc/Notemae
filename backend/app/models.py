@@ -17,7 +17,12 @@ class Fragrance(BaseModel):
     description: str
     gender: str
     release_year: int | None = None
+    # ordered union of the three tiers, opening first; populated on its own
+    # for records ingested before the pyramid existed
     notes: list[str]
+    top_notes: list[str] = Field(default_factory=list)
+    heart_notes: list[str] = Field(default_factory=list)
+    base_notes: list[str] = Field(default_factory=list)
     occasions: list[str]
     climates: list[str]
     price_idr: int | None = None
@@ -41,6 +46,9 @@ class InternalFragranceUpsert(BaseModel):
     gender: str = Field(default="unisex", max_length=30)
     release_year: int | None = Field(default=None, ge=1800, le=2100)
     notes: list[str] = Field(default_factory=list, max_length=50)
+    top_notes: list[str] = Field(default_factory=list, max_length=25)
+    heart_notes: list[str] = Field(default_factory=list, max_length=25)
+    base_notes: list[str] = Field(default_factory=list, max_length=25)
     occasions: list[str] = Field(default_factory=list, max_length=20)
     climates: list[str] = Field(default_factory=list, max_length=20)
     price_idr: int | None = Field(default=None, ge=0)
@@ -70,6 +78,10 @@ class DupeResponse(BaseModel):
     explanation: str | None = None
     generated_by: GeneratedBy | None = None
     disclaimer: str
+
+
+class FeaturedList(BaseModel):
+    items: list[DupeResponse]
 
 
 class RecommendationRequest(BaseModel):

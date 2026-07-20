@@ -1,6 +1,12 @@
 -- Additional demo catalog seed for ScentSphere.
 -- This file is idempotent and can be run against an existing local database.
 -- Data is curated demo metadata for recommendation testing; replace with licensed/verified feeds before production.
+--
+-- These rows deliberately carry a flat `notes` list and no pyramid. That is
+-- the same state every record ingested before migration 004 is in, so the
+-- demo catalog exercises the volatility-inference fallback rather than
+-- hiding it. Real tiers arrive per record from the enrichment pass; nobody
+-- should hand-transcribe a second copy of the volatility table into SQL.
 
 INSERT INTO fragrances (
     slug, brand, name, description, gender, notes, occasions, climates,

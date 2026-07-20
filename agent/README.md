@@ -15,8 +15,26 @@ variables and explicit settings still take precedence over dotenv values.
 - `QWEN_EMBED_MODEL`: embedding model, default `text-embedding-v4`.
 - `QWEN_EMBEDDING_DIMENSIONS`: must match the pgvector column; default `1024`.
 - `QWEN_THINKING`: enables thinking for explanations, but not structured profile extraction.
-- `QWEN_RERANK_ENABLED`: LLM listwise rerank of the scored survivor pool, default on; degrades to deterministic order on any failure.
-- `QWEN_RERANK_VOTES` / `QWEN_RERANK_POOL` / `QWEN_RERANK_WEIGHT` / `QWEN_RERANK_TEMPERATURE`: self-consistency vote count (default 2), pool size (10), blend weight (0.3), and vote temperature (0.7).
+- `QWEN_RERANK_ENABLED`: LLM listwise rerank of the scored survivor pool, default off; degrades to deterministic order on any failure.
+- `QWEN_RERANK_VOTES` / `QWEN_RERANK_POOL` / `QWEN_RERANK_WEIGHT` / `QWEN_RERANK_TEMPERATURE`: self-consistency vote count (default 1), pool size (6), blend weight (0.3), and vote temperature (0.7).
+- `QWEN_MAX_OUTPUT_TOKENS`: hard output cap per model call, default `320`.
+- `QWEN_MAX_CALLS_PER_HOUR`: process-level safety fuse for billable calls, default `120`. Set to `0` only when an external quota mechanism is in place.
+- `MODEL_CACHE_TTL_SECONDS` / `MODEL_CACHE_MAX_ENTRIES`: process-local cache for successful preference parses and non-streaming explanations. Defaults: one hour and 256 entries. Set either to `0` to disable it.
+- `REDIS_URL`: optional Redis connection URL. When set, response-cache entries and the hourly model-call safety fuse are shared by every agent container. The Compose stack configures it automatically.
+
+## Credit-conscious defaults
+
+The deterministic scorer is the default ranking path: `QWEN_RERANK_ENABLED`
+defaults to `false`. Enable it only after choosing the quality/latency/cost
+trade-off for production. Structured calls, explanations, and rerank votes are
+output-capped; reasoning is off by default. Use `/v1/recommend/rank` with
+`rerank=false` for an entirely model-free result, and call an explanation
+endpoint only after the user asks for one.
+
+`GET /v1/metrics/model` reports aggregate calls, cache hits, failures, calls
+blocked by the hourly budget, and provider-reported input/output tokens. It
+never exposes prompts or user identifiers. Restrict this endpoint at the
+reverse proxy in production.
 
 Fine-tuning data, validation, evaluation scripts, and console instructions are in `fine_tuning/`.
 

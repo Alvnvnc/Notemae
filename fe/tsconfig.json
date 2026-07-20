@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+
+    /* Modul legacy masih JavaScript polos dan diimpor dari TypeScript selama
+       migrasi. `allowJs` membuatnya bisa di-resolve dan tipenya disimpulkan,
+       `checkJs: false` menahan diri memeriksanya - file-file itu memang belum
+       ditulis untuk lolos `strict`, dan akan hilang satu per satu. */
+    "allowJs": true,
+    "checkJs": false,
+
+    /* server.ts dan ssr.ts dijalankan Node langsung lewat type stripping
+       bawaan (Node >= 22.18), jadi impornya menyebut ekstensi `.ts` apa
+       adanya - tidak ada emit yang perlu menulis ulang jalurnya. */
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": false,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noEmit": true,
+
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client"]
+  },
+  "include": ["src", "server.ts", "ssr.ts", "vite.config.ts"]
+}

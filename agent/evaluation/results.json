@@ -1,4 +1,30 @@
 {
+  "metadata": {
+    "created_at": "2026-07-20T09:57:19.078125+00:00",
+    "primary_metric": "mean_ndcg@3",
+    "personas_fixture": "/home/ubuntu/Notemae/agent/evaluation/fixtures/personas.json",
+    "personas_fixture_sha256": "e90eb0dabfe89d33e0dc3756fe6d47fc700de20de242d5ea3e70511dc46514eb",
+    "catalog_fixture": "/home/ubuntu/Notemae/agent/evaluation/fixtures/catalog.json",
+    "catalog_fixture_sha256": "d88a264b9c08b84f2936d40cb54e43b4a670a8398bcc57c324db10430e088328",
+    "personas": 30,
+    "catalog_items": 37,
+    "python": "3.14.4",
+    "random_seed": 20260717,
+    "command": [
+      "/home/ubuntu/Notemae/agent/.venv/bin/python",
+      "evaluation/run_eval.py"
+    ],
+    "rerank_model": null,
+    "rerank_runs_requested": 0,
+    "rerank_votes": 2,
+    "rerank_pool": 10,
+    "rerank_weight": 0.3,
+    "rerank_temperature": 0.7,
+    "judge_model": null,
+    "judge_uses_reranker_model": null,
+    "scope": "offline ranking over structured profiles and a curated full catalog; does not evaluate extraction, production retrieval, ingestion, or explanations",
+    "rerank_runs_completed": 0
+  },
   "personas": 30,
   "deterministic": {
     "per_persona": [
@@ -6,788 +32,15 @@
         "persona": "Andi — fresh kantor hemat",
         "top": [
           "versace-pour-homme",
-          "zara-vibrant-leather",
-          "hmns-perfume-farhampton"
-        ],
-        "ndcg@3": 0.679,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.545,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "versace-pour-homme": 2,
-          "zara-vibrant-leather": 1,
-          "hmns-perfume-farhampton": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "versace-pour-homme": 3.0,
-          "zara-vibrant-leather": 0.0,
-          "hmns-perfume-farhampton": 2.0
-        }
-      },
-      {
-        "persona": "Sari — floral kantor lembut",
-        "top": [
-          "chloe-edp",
-          "the-body-shop-white-musk",
-          "dior-jadore"
-        ],
-        "ndcg@3": 0.88,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.7,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "chloe-edp": 2,
-          "the-body-shop-white-musk": 1,
-          "dior-jadore": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "chloe-edp": 3.0,
-          "the-body-shop-white-musk": 1.0,
-          "dior-jadore": 2.0
-        }
-      },
-      {
-        "persona": "Budi — date night manis",
-        "top": [
-          "versace-eros",
-          "onix-vanilla-groove",
-          "azzaro-wanted-by-night"
-        ],
-        "ndcg@3": 0.786,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.826,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "versace-eros": 2,
-          "onix-vanilla-groove": 1,
-          "azzaro-wanted-by-night": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "versace-eros": 3.0,
-          "onix-vanilla-groove": 1.0,
-          "azzaro-wanted-by-night": 2.0
-        }
-      },
-      {
-        "persona": "Maya — mirip Coco Mademoiselle",
-        "top": [
-          "viktor-rolf-flowerbomb",
-          "lancome-la-vie-est-belle",
-          "hmns-perfume-farhampton"
-        ],
-        "ndcg@3": 0.83,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.794,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "viktor-rolf-flowerbomb": 1,
-          "lancome-la-vie-est-belle": 2,
-          "hmns-perfume-farhampton": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "viktor-rolf-flowerbomb": 3.0,
-          "lancome-la-vie-est-belle": 3.0,
-          "hmns-perfume-farhampton": 0.0
-        }
-      },
-      {
-        "persona": "Rizky — gym mahasiswa",
-        "top": [
-          "hmns-perfume-farhampton",
-          "adidas-dynamic-pulse",
-          "mine-perfumery-morning-dew"
-        ],
-        "ndcg@3": 0.645,
-        "hit@1": false,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.668,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "hmns-perfume-farhampton": 2,
-          "adidas-dynamic-pulse": 1,
-          "mine-perfumery-morning-dew": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "hmns-perfume-farhampton": 1.0,
-          "adidas-dynamic-pulse": 3.0,
-          "mine-perfumery-morning-dew": 1.0
-        }
-      },
-      {
-        "persona": "Pak Hendra — wedding woody mewah",
-        "top": [
-          "tom-ford-oud-wood",
-          "le-labo-santal-33",
-          "hmns-perfume-farhampton"
-        ],
-        "ndcg@3": 0.81,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.9,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "tom-ford-oud-wood": 2,
-          "le-labo-santal-33": 1,
-          "hmns-perfume-farhampton": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "tom-ford-oud-wood": 3.0,
-          "le-labo-santal-33": 2.0,
-          "hmns-perfume-farhampton": 0.0
-        }
-      },
-      {
-        "persona": "Dewi — vanilla anti-floral",
-        "top": [
-          "kayali-vanilla-29",
-          "onix-vanilla-groove",
-          "hmns-perfume-farhampton"
-        ],
-        "ndcg@3": 1.0,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.659,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "kayali-vanilla-29": 2,
-          "onix-vanilla-groove": 1,
-          "hmns-perfume-farhampton": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "kayali-vanilla-29": 3.0,
-          "onix-vanilla-groove": 2.0,
-          "hmns-perfume-farhampton": 0.0
-        }
-      },
-      {
-        "persona": "Yoga — bosan Sauvage",
-        "top": [
-          "prada-lhomme",
-          "davidoff-cool-water",
-          "ysl-y-edp"
-        ],
-        "ndcg@3": 0.679,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.895,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "prada-lhomme": 2,
-          "davidoff-cool-water": 1,
-          "ysl-y-edp": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "prada-lhomme": 3.0,
-          "davidoff-cool-water": 0.0,
-          "ysl-y-edp": 2.0
-        }
-      },
-      {
-        "persona": "Intan — pesta malam bold",
-        "top": [
-          "lancome-la-vie-est-belle",
-          "ysl-libre",
-          "ysl-black-opium"
-        ],
-        "ndcg@3": 0.893,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.66,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "lancome-la-vie-est-belle": 2,
-          "ysl-libre": 1,
-          "ysl-black-opium": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "lancome-la-vie-est-belle": 3.0,
-          "ysl-libre": 2.0,
-          "ysl-black-opium": 2.0
-        }
-      },
-      {
-        "persona": "Fajar — kolektor suka Aventus",
-        "top": [
-          "armaf-club-de-nuit-intense",
-          "davidoff-cool-water",
-          "mine-perfumery-morning-dew"
-        ],
-        "ndcg@3": 0.63,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.705,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "armaf-club-de-nuit-intense": 2,
-          "davidoff-cool-water": 0,
-          "mine-perfumery-morning-dew": 0
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "armaf-club-de-nuit-intense": 3.0,
-          "davidoff-cool-water": 0.0,
-          "mine-perfumery-morning-dew": 0.0
-        }
-      },
-      {
-        "persona": "Citra — daily lembut tidak menyengat",
-        "top": [
-          "ck-one",
-          "the-body-shop-white-musk",
-          "hmns-perfume-farhampton"
-        ],
-        "ndcg@3": 0.74,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.777,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "ck-one": 1,
-          "the-body-shop-white-musk": 2,
-          "hmns-perfume-farhampton": 1
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "ck-one": 2.0,
-          "the-body-shop-white-musk": 3.0,
-          "hmns-perfume-farhampton": 0.0
-        }
-      },
-      {
-        "persona": "Deni — kopi dan tembakau",
-        "top": [
-          "azzaro-wanted-by-night",
-          "ysl-black-opium",
-          "maison-margiela-jazz-club"
-        ],
-        "ndcg@3": 0.905,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.764,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "azzaro-wanted-by-night": 1,
-          "ysl-black-opium": 1,
-          "maison-margiela-jazz-club": 2
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "azzaro-wanted-by-night": 2.0,
-          "ysl-black-opium": 2.0,
-          "maison-margiela-jazz-club": 3.0
-        }
-      },
-      {
-        "persona": "Tante Rossa — kondangan elegan",
-        "top": [
-          "dior-jadore",
-          "gucci-bloom",
-          "viktor-rolf-flowerbomb"
-        ],
-        "ndcg@3": 1.0,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.706,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "dior-jadore": 2,
-          "gucci-bloom": 1,
-          "viktor-rolf-flowerbomb": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "dior-jadore": 3.0,
-          "gucci-bloom": 3.0,
-          "viktor-rolf-flowerbomb": 2.0
-        }
-      },
-      {
-        "persona": "Bang Jaka — ojol panas-panasan",
-        "top": [
-          "mine-perfumery-morning-dew",
-          "adidas-dynamic-pulse",
-          "onix-vanilla-groove"
-        ],
-        "ndcg@3": 0.699,
-        "hit@1": false,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.833,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "mine-perfumery-morning-dew": 0,
-          "adidas-dynamic-pulse": 0,
-          "onix-vanilla-groove": 1
-        },
-        "judge_mean": 0.333,
-        "label_gains": {
-          "mine-perfumery-morning-dew": 1.0,
-          "adidas-dynamic-pulse": 1.0,
-          "onix-vanilla-groove": 2.0
-        }
-      },
-      {
-        "persona": "Nadia — aquatic perenang",
-        "top": [
-          "hmns-perfume-farhampton",
-          "saff-co-crimson",
-          "onix-vanilla-groove"
-        ],
-        "ndcg@3": 0.57,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.915,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "hmns-perfume-farhampton": 2,
-          "saff-co-crimson": 0,
-          "onix-vanilla-groove": 0
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "hmns-perfume-farhampton": 3.0,
-          "saff-co-crimson": 0.0,
-          "onix-vanilla-groove": 0.0
-        }
-      },
-      {
-        "persona": "Om Bram — bos meeting formal",
-        "top": [
-          "prada-lhomme",
-          "creed-aventus",
-          "le-labo-santal-33"
-        ],
-        "ndcg@3": 0.83,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.826,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "prada-lhomme": 2,
-          "creed-aventus": 1,
-          "le-labo-santal-33": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "prada-lhomme": 2.0,
-          "creed-aventus": 3.0,
-          "le-labo-santal-33": 2.0
-        }
-      },
-      {
-        "persona": "Lia — kado pacar suka manis",
-        "top": [
-          "onix-vanilla-groove",
-          "versace-eros",
-          "saff-co-crimson"
-        ],
-        "ndcg@3": 0.74,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.866,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "onix-vanilla-groove": 2,
-          "versace-eros": 0,
-          "saff-co-crimson": 0
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "onix-vanilla-groove": 2.0,
-          "versace-eros": 3.0,
-          "saff-co-crimson": 0.0
-        }
-      },
-      {
-        "persona": "Raka — barbershop leather",
-        "top": [
-          "zara-vibrant-leather",
-          "armaf-club-de-nuit-intense",
-          "adidas-dynamic-pulse"
-        ],
-        "ndcg@3": 0.895,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.669,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "zara-vibrant-leather": 2,
-          "armaf-club-de-nuit-intense": 1,
-          "adidas-dynamic-pulse": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "zara-vibrant-leather": 3.0,
-          "armaf-club-de-nuit-intense": 2.0,
-          "adidas-dynamic-pulse": 0.0
-        }
-      },
-      {
-        "persona": "Bu Woro — pengajian powdery",
-        "top": [
-          "ck-one",
-          "the-body-shop-white-musk",
-          "mine-perfumery-morning-dew"
-        ],
-        "ndcg@3": 0.882,
-        "hit@1": false,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.664,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "ck-one": 0,
-          "the-body-shop-white-musk": 2,
-          "mine-perfumery-morning-dew": 1
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "ck-one": 1.0,
-          "the-body-shop-white-musk": 2.0,
-          "mine-perfumery-morning-dew": 1.0
-        }
-      },
-      {
-        "persona": "Kevin — clubbing Jakarta",
-        "top": [
-          "dior-sauvage-edt",
-          "azzaro-wanted-by-night",
-          "versace-eros"
-        ],
-        "ndcg@3": 0.616,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.858,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "dior-sauvage-edt": 2,
-          "azzaro-wanted-by-night": 2,
-          "versace-eros": 2
-        },
-        "judge_mean": 2,
-        "label_gains": {
-          "dior-sauvage-edt": 2.0,
-          "azzaro-wanted-by-night": 1.0,
-          "versace-eros": 2.0
-        }
-      },
-      {
-        "persona": "Sinta — upgrade dari Light Blue",
-        "top": [
-          "hmns-perfume-farhampton",
-          "ck-one",
-          "ysl-libre"
-        ],
-        "ndcg@3": 0.765,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.763,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "hmns-perfume-farhampton": 2,
-          "ck-one": 1,
-          "ysl-libre": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "hmns-perfume-farhampton": 2.0,
-          "ck-one": 2.0,
-          "ysl-libre": 0.0
-        }
-      },
-      {
-        "persona": "Arif — incense amber",
-        "top": [
-          "bleu-de-chanel-edp",
-          "kayali-vanilla-29",
-          "saff-co-crimson"
-        ],
-        "ndcg@3": 0.594,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.903,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "bleu-de-chanel-edp": 2,
-          "kayali-vanilla-29": 0,
-          "saff-co-crimson": 1
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "bleu-de-chanel-edp": 3.0,
-          "kayali-vanilla-29": 0.0,
-          "saff-co-crimson": 1.0
-        }
-      },
-      {
-        "persona": "Mega — fruity anti-floral",
-        "top": [
-          "dolce-gabbana-light-blue",
-          "onix-vanilla-groove",
-          "mine-perfumery-morning-dew"
-        ],
-        "ndcg@3": 1.0,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.761,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "dolce-gabbana-light-blue": 0,
-          "onix-vanilla-groove": 1,
-          "mine-perfumery-morning-dew": 1
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "dolce-gabbana-light-blue": 3.0,
-          "onix-vanilla-groove": 1.0,
-          "mine-perfumery-morning-dew": 1.0
-        }
-      },
-      {
-        "persona": "Pak Darto — klasik lavender",
-        "top": [
-          "davidoff-cool-water",
-          "hmns-alpha",
-          "adidas-dynamic-pulse"
-        ],
-        "ndcg@3": 1.0,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.687,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "davidoff-cool-water": 2,
-          "hmns-alpha": 1,
-          "adidas-dynamic-pulse": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "davidoff-cool-water": 3.0,
-          "hmns-alpha": 2.0,
-          "adidas-dynamic-pulse": 0.0
-        }
-      },
-      {
-        "persona": "Vina — lapangan panas anti-manis",
-        "top": [
-          "mine-perfumery-morning-dew",
-          "hmns-perfume-farhampton",
-          "ck-one"
-        ],
-        "ndcg@3": 0.905,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.559,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "mine-perfumery-morning-dew": 2,
-          "hmns-perfume-farhampton": 2,
-          "ck-one": 2
-        },
-        "judge_mean": 2,
-        "label_gains": {
-          "mine-perfumery-morning-dew": 2.0,
-          "hmns-perfume-farhampton": 2.0,
-          "ck-one": 3.0
-        }
-      },
-      {
-        "persona": "Rendi — coffee shop aesthetic",
-        "top": [
-          "versace-eros",
-          "ysl-black-opium",
-          "onix-vanilla-groove"
-        ],
-        "ndcg@3": 0.502,
-        "hit@1": false,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.766,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "versace-eros": 0,
-          "ysl-black-opium": 2,
-          "onix-vanilla-groove": 1
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "versace-eros": 0.0,
-          "ysl-black-opium": 3.0,
-          "onix-vanilla-groove": 1.0
-        }
-      },
-      {
-        "persona": "Tya — skin scent minimalis",
-        "top": [
-          "ck-one",
-          "the-body-shop-white-musk",
-          "hmns-perfume-farhampton"
-        ],
-        "ndcg@3": 0.835,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.777,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "ck-one": 1,
-          "the-body-shop-white-musk": 2,
-          "hmns-perfume-farhampton": 1
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "ck-one": 2.0,
-          "the-body-shop-white-musk": 3.0,
-          "hmns-perfume-farhampton": 1.0
-        }
-      },
-      {
-        "persona": "Galih — oud leather gelap",
-        "top": [
-          "le-labo-santal-33",
-          "zara-vibrant-leather",
-          "paco-rabanne-one-million"
-        ],
-        "ndcg@3": 0.715,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.851,
-        "latency_s": 0.01,
-        "judge_ratings": {
-          "le-labo-santal-33": 2,
-          "zara-vibrant-leather": 0,
-          "paco-rabanne-one-million": 0
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "le-labo-santal-33": 2.0,
-          "zara-vibrant-leather": 2.0,
-          "paco-rabanne-one-million": 1.0
-        }
-      },
-      {
-        "persona": "Putri — first date aman",
-        "top": [
-          "saff-co-crimson",
-          "onix-vanilla-groove",
-          "the-body-shop-white-musk"
-        ],
-        "ndcg@3": 0.905,
-        "hit@1": true,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.781,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "saff-co-crimson": 2,
-          "onix-vanilla-groove": 2,
-          "the-body-shop-white-musk": 0
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "saff-co-crimson": 3.0,
-          "onix-vanilla-groove": 2.0,
-          "the-body-shop-white-musk": 1.0
-        }
-      },
-      {
-        "persona": "Haris — interview pertama",
-        "top": [
-          "armaf-club-de-nuit-intense",
           "hmns-alpha",
           "zara-vibrant-leather"
         ],
-        "ndcg@3": 0.413,
-        "hit@1": false,
-        "avoid_violation": false,
-        "budget_violation": false,
-        "diversity": 0.764,
-        "latency_s": 0.0,
-        "judge_ratings": {
-          "armaf-club-de-nuit-intense": 0,
-          "hmns-alpha": 2,
-          "zara-vibrant-leather": 1
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "armaf-club-de-nuit-intense": 0.0,
-          "hmns-alpha": 2.0,
-          "zara-vibrant-leather": 1.0
-        }
-      }
-    ],
-    "mean_ndcg@3": 0.778,
-    "hit@1_rate": 0.833,
-    "avoid_violation_rate": 0.0,
-    "budget_violation_rate": 0.0,
-    "mean_diversity": 0.761,
-    "mean_latency_s": 0.0,
-    "mean_judge": 1.167,
-    "judged_personas": 30
-  },
-  "deterministic+llm_rerank": {
-    "per_persona": [
-      {
-        "persona": "Andi — fresh kantor hemat",
-        "top": [
-          "versace-pour-homme",
-          "zara-vibrant-leather",
-          "hmns-perfume-farhampton"
-        ],
-        "ndcg@3": 0.679,
+        "ndcg@3": 0.723,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.545,
-        "latency_s": 3.25,
-        "judge_ratings": {
-          "versace-pour-homme": 2,
-          "zara-vibrant-leather": 1,
-          "hmns-perfume-farhampton": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "versace-pour-homme": 3.0,
-          "zara-vibrant-leather": 0.0,
-          "hmns-perfume-farhampton": 2.0
-        }
+        "diversity": 0.749,
+        "latency_s": 0.03
       },
       {
         "persona": "Sari — floral kantor lembut",
@@ -801,18 +54,7 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.7,
-        "latency_s": 3.44,
-        "judge_ratings": {
-          "chloe-edp": 2,
-          "the-body-shop-white-musk": 1,
-          "dior-jadore": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "chloe-edp": 3.0,
-          "the-body-shop-white-musk": 1.0,
-          "dior-jadore": 2.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Budi — date night manis",
@@ -826,68 +68,35 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.666,
-        "latency_s": 3.78,
-        "judge_ratings": {
-          "versace-eros": 2,
-          "onix-vanilla-groove": 1,
-          "jean-paul-gaultier-ultra-male": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "versace-eros": 3.0,
-          "onix-vanilla-groove": 1.0,
-          "jean-paul-gaultier-ultra-male": 3.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Maya — mirip Coco Mademoiselle",
         "top": [
           "viktor-rolf-flowerbomb",
-          "ysl-libre",
-          "lancome-la-vie-est-belle"
+          "lancome-la-vie-est-belle",
+          "hmns-perfume-farhampton"
         ],
-        "ndcg@3": 0.978,
+        "ndcg@3": 0.83,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.639,
-        "latency_s": 4.01,
-        "judge_ratings": {
-          "viktor-rolf-flowerbomb": 1,
-          "ysl-libre": 2,
-          "lancome-la-vie-est-belle": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "viktor-rolf-flowerbomb": 3.0,
-          "ysl-libre": 2.0,
-          "lancome-la-vie-est-belle": 3.0
-        }
+        "diversity": 0.794,
+        "latency_s": 0.0
       },
       {
         "persona": "Rizky — gym mahasiswa",
         "top": [
           "hmns-perfume-farhampton",
-          "mine-perfumery-morning-dew",
-          "adidas-dynamic-pulse"
+          "adidas-dynamic-pulse",
+          "mine-perfumery-morning-dew"
         ],
-        "ndcg@3": 0.595,
+        "ndcg@3": 0.645,
         "hit@1": false,
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.668,
-        "latency_s": 3.39,
-        "judge_ratings": {
-          "hmns-perfume-farhampton": 2,
-          "mine-perfumery-morning-dew": 2,
-          "adidas-dynamic-pulse": 1
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "hmns-perfume-farhampton": 1.0,
-          "mine-perfumery-morning-dew": 1.0,
-          "adidas-dynamic-pulse": 3.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Pak Hendra — wedding woody mewah",
@@ -901,18 +110,7 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.852,
-        "latency_s": 3.71,
-        "judge_ratings": {
-          "tom-ford-oud-wood": 2,
-          "le-labo-santal-33": 1,
-          "bleu-de-chanel-edp": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "tom-ford-oud-wood": 3.0,
-          "le-labo-santal-33": 2.0,
-          "bleu-de-chanel-edp": 2.0
-        }
+        "latency_s": 0.01
       },
       {
         "persona": "Dewi — vanilla anti-floral",
@@ -926,168 +124,91 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.659,
-        "latency_s": 3.06,
-        "judge_ratings": {
-          "kayali-vanilla-29": 2,
-          "onix-vanilla-groove": 1,
-          "hmns-perfume-farhampton": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "kayali-vanilla-29": 3.0,
-          "onix-vanilla-groove": 2.0,
-          "hmns-perfume-farhampton": 0.0
-        }
+        "latency_s": 0.02
       },
       {
         "persona": "Yoga — bosan Sauvage",
         "top": [
           "prada-lhomme",
-          "acqua-di-gio-profumo",
-          "ck-one"
+          "davidoff-cool-water",
+          "ysl-y-edp"
         ],
-        "ndcg@3": 0.723,
+        "ndcg@3": 0.679,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.845,
-        "latency_s": 3.51,
-        "judge_ratings": {
-          "prada-lhomme": 2,
-          "acqua-di-gio-profumo": 2,
-          "ck-one": 1
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "prada-lhomme": 3.0,
-          "acqua-di-gio-profumo": 2.0,
-          "ck-one": 0.0
-        }
+        "diversity": 0.895,
+        "latency_s": 0.0
       },
       {
         "persona": "Intan — pesta malam bold",
         "top": [
           "lancome-la-vie-est-belle",
-          "ysl-black-opium",
-          "viktor-rolf-flowerbomb"
+          "ysl-libre",
+          "ysl-black-opium"
         ],
-        "ndcg@3": 0.978,
+        "ndcg@3": 0.893,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.549,
-        "latency_s": 3.74,
-        "judge_ratings": {
-          "lancome-la-vie-est-belle": 2,
-          "ysl-black-opium": 2,
-          "viktor-rolf-flowerbomb": 1
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "lancome-la-vie-est-belle": 3.0,
-          "ysl-black-opium": 2.0,
-          "viktor-rolf-flowerbomb": 3.0
-        }
+        "diversity": 0.66,
+        "latency_s": 0.0
       },
       {
         "persona": "Fajar — kolektor suka Aventus",
         "top": [
           "armaf-club-de-nuit-intense",
-          "montblanc-explorer",
-          "zara-vibrant-leather"
+          "davidoff-cool-water",
+          "mine-perfumery-morning-dew"
         ],
-        "ndcg@3": 0.895,
+        "ndcg@3": 0.63,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.689,
-        "latency_s": 3.55,
-        "judge_ratings": {
-          "armaf-club-de-nuit-intense": 2,
-          "montblanc-explorer": 2,
-          "zara-vibrant-leather": 1
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "armaf-club-de-nuit-intense": 3.0,
-          "montblanc-explorer": 2.0,
-          "zara-vibrant-leather": 0.0
-        }
+        "diversity": 0.705,
+        "latency_s": 0.0
       },
       {
         "persona": "Citra — daily lembut tidak menyengat",
         "top": [
-          "the-body-shop-white-musk",
           "ck-one",
-          "mine-perfumery-morning-dew"
+          "the-body-shop-white-musk",
+          "hmns-perfume-farhampton"
         ],
-        "ndcg@3": 1.0,
+        "ndcg@3": 0.74,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.664,
-        "latency_s": 2.73,
-        "judge_ratings": {
-          "the-body-shop-white-musk": 2,
-          "ck-one": 1,
-          "mine-perfumery-morning-dew": 1
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "the-body-shop-white-musk": 3.0,
-          "ck-one": 2.0,
-          "mine-perfumery-morning-dew": 2.0
-        }
+        "diversity": 0.777,
+        "latency_s": 0.0
       },
       {
         "persona": "Deni — kopi dan tembakau",
         "top": [
+          "azzaro-wanted-by-night",
           "ysl-black-opium",
-          "maison-margiela-jazz-club",
-          "azzaro-wanted-by-night"
+          "maison-margiela-jazz-club"
         ],
-        "ndcg@3": 0.93,
+        "ndcg@3": 0.905,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.764,
-        "latency_s": 4.17,
-        "judge_ratings": {
-          "ysl-black-opium": 2,
-          "maison-margiela-jazz-club": 1,
-          "azzaro-wanted-by-night": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "ysl-black-opium": 2.0,
-          "maison-margiela-jazz-club": 3.0,
-          "azzaro-wanted-by-night": 2.0
-        }
+        "latency_s": 0.01
       },
       {
         "persona": "Tante Rossa — kondangan elegan",
         "top": [
           "dior-jadore",
-          "viktor-rolf-flowerbomb",
-          "gucci-bloom"
+          "gucci-bloom",
+          "viktor-rolf-flowerbomb"
         ],
-        "ndcg@3": 0.978,
+        "ndcg@3": 1.0,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.706,
-        "latency_s": 3.39,
-        "judge_ratings": {
-          "dior-jadore": 2,
-          "viktor-rolf-flowerbomb": 2,
-          "gucci-bloom": 1
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "dior-jadore": 3.0,
-          "viktor-rolf-flowerbomb": 2.0,
-          "gucci-bloom": 3.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Bang Jaka — ojol panas-panasan",
@@ -1101,93 +222,49 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.833,
-        "latency_s": 2.68,
-        "judge_ratings": {
-          "mine-perfumery-morning-dew": 0,
-          "adidas-dynamic-pulse": 0,
-          "onix-vanilla-groove": 1
-        },
-        "judge_mean": 0.333,
-        "label_gains": {
-          "mine-perfumery-morning-dew": 1.0,
-          "adidas-dynamic-pulse": 1.0,
-          "onix-vanilla-groove": 2.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Nadia — aquatic perenang",
         "top": [
           "hmns-perfume-farhampton",
-          "ck-one",
-          "saff-co-crimson"
+          "saff-co-crimson",
+          "onix-vanilla-groove"
         ],
-        "ndcg@3": 0.81,
+        "ndcg@3": 0.57,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.889,
-        "latency_s": 2.81,
-        "judge_ratings": {
-          "hmns-perfume-farhampton": 2,
-          "ck-one": 1,
-          "saff-co-crimson": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "hmns-perfume-farhampton": 3.0,
-          "ck-one": 2.0,
-          "saff-co-crimson": 0.0
-        }
+        "diversity": 0.915,
+        "latency_s": 0.0
       },
       {
         "persona": "Om Bram — bos meeting formal",
         "top": [
           "prada-lhomme",
           "creed-aventus",
-          "bleu-de-chanel-edp"
+          "le-labo-santal-33"
         ],
-        "ndcg@3": 0.915,
+        "ndcg@3": 0.83,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.764,
-        "latency_s": 3.29,
-        "judge_ratings": {
-          "prada-lhomme": 2,
-          "creed-aventus": 1,
-          "bleu-de-chanel-edp": 2
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "prada-lhomme": 2.0,
-          "creed-aventus": 3.0,
-          "bleu-de-chanel-edp": 3.0
-        }
+        "diversity": 0.826,
+        "latency_s": 0.02
       },
       {
         "persona": "Lia — kado pacar suka manis",
         "top": [
           "onix-vanilla-groove",
           "versace-eros",
-          "hmns-alpha"
+          "saff-co-crimson"
         ],
         "ndcg@3": 0.74,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.806,
-        "latency_s": 3.56,
-        "judge_ratings": {
-          "onix-vanilla-groove": 2,
-          "versace-eros": 0,
-          "hmns-alpha": 0
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "onix-vanilla-groove": 2.0,
-          "versace-eros": 3.0,
-          "hmns-alpha": 0.0
-        }
+        "diversity": 0.866,
+        "latency_s": 0.0
       },
       {
         "persona": "Raka — barbershop leather",
@@ -1201,68 +278,35 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.574,
-        "latency_s": 3.94,
-        "judge_ratings": {
-          "zara-vibrant-leather": 2,
-          "hmns-perfume-farhampton": 1,
-          "adidas-dynamic-pulse": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "zara-vibrant-leather": 3.0,
-          "hmns-perfume-farhampton": 0.0,
-          "adidas-dynamic-pulse": 0.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Bu Woro — pengajian powdery",
         "top": [
-          "the-body-shop-white-musk",
           "ck-one",
+          "the-body-shop-white-musk",
           "mine-perfumery-morning-dew"
         ],
-        "ndcg@3": 1.0,
-        "hit@1": true,
+        "ndcg@3": 0.882,
+        "hit@1": false,
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.664,
-        "latency_s": 2.44,
-        "judge_ratings": {
-          "the-body-shop-white-musk": 2,
-          "ck-one": 0,
-          "mine-perfumery-morning-dew": 0
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "the-body-shop-white-musk": 2.0,
-          "ck-one": 1.0,
-          "mine-perfumery-morning-dew": 1.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Kevin — clubbing Jakarta",
         "top": [
-          "jean-paul-gaultier-ultra-male",
           "dior-sauvage-edt",
-          "azzaro-wanted-by-night"
+          "azzaro-wanted-by-night",
+          "versace-eros"
         ],
-        "ndcg@3": 0.808,
+        "ndcg@3": 0.616,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.815,
-        "latency_s": 3.71,
-        "judge_ratings": {
-          "jean-paul-gaultier-ultra-male": 2,
-          "dior-sauvage-edt": 1,
-          "azzaro-wanted-by-night": 1
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "jean-paul-gaultier-ultra-male": 3.0,
-          "dior-sauvage-edt": 2.0,
-          "azzaro-wanted-by-night": 1.0
-        }
+        "diversity": 0.858,
+        "latency_s": 0.0
       },
       {
         "persona": "Sinta — upgrade dari Light Blue",
@@ -1276,68 +320,35 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.763,
-        "latency_s": 2.96,
-        "judge_ratings": {
-          "hmns-perfume-farhampton": 2,
-          "ck-one": 1,
-          "ysl-libre": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "hmns-perfume-farhampton": 2.0,
-          "ck-one": 2.0,
-          "ysl-libre": 0.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Arif — incense amber",
         "top": [
           "bleu-de-chanel-edp",
-          "acqua-di-gio-profumo",
-          "kayali-vanilla-29"
+          "paco-rabanne-one-million",
+          "ysl-y-edp"
         ],
-        "ndcg@3": 0.83,
+        "ndcg@3": 0.594,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.825,
-        "latency_s": 3.42,
-        "judge_ratings": {
-          "bleu-de-chanel-edp": 2,
-          "acqua-di-gio-profumo": 1,
-          "kayali-vanilla-29": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "bleu-de-chanel-edp": 3.0,
-          "acqua-di-gio-profumo": 3.0,
-          "kayali-vanilla-29": 0.0
-        }
+        "diversity": 0.851,
+        "latency_s": 0.0
       },
       {
         "persona": "Mega — fruity anti-floral",
         "top": [
           "dolce-gabbana-light-blue",
-          "hmns-perfume-farhampton",
-          "ck-one"
+          "onix-vanilla-groove",
+          "mine-perfumery-morning-dew"
         ],
-        "ndcg@3": 0.726,
+        "ndcg@3": 1.0,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.571,
-        "latency_s": 2.97,
-        "judge_ratings": {
-          "dolce-gabbana-light-blue": 0,
-          "hmns-perfume-farhampton": 1,
-          "ck-one": 1
-        },
-        "judge_mean": 0.667,
-        "label_gains": {
-          "dolce-gabbana-light-blue": 3.0,
-          "hmns-perfume-farhampton": 0.0,
-          "ck-one": 0.0
-        }
+        "diversity": 0.761,
+        "latency_s": 0.02
       },
       {
         "persona": "Pak Darto — klasik lavender",
@@ -1351,18 +362,7 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.687,
-        "latency_s": 3.52,
-        "judge_ratings": {
-          "davidoff-cool-water": 2,
-          "hmns-alpha": 1,
-          "adidas-dynamic-pulse": 0
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "davidoff-cool-water": 3.0,
-          "hmns-alpha": 2.0,
-          "adidas-dynamic-pulse": 0.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Vina — lapangan panas anti-manis",
@@ -1376,93 +376,49 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.559,
-        "latency_s": 2.6,
-        "judge_ratings": {
-          "mine-perfumery-morning-dew": 2,
-          "hmns-perfume-farhampton": 2,
-          "ck-one": 2
-        },
-        "judge_mean": 2,
-        "label_gains": {
-          "mine-perfumery-morning-dew": 2.0,
-          "hmns-perfume-farhampton": 2.0,
-          "ck-one": 3.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Rendi — coffee shop aesthetic",
         "top": [
           "ysl-black-opium",
           "versace-eros",
-          "kayali-vanilla-29"
+          "onix-vanilla-groove"
         ],
         "ndcg@3": 0.735,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.731,
-        "latency_s": 3.25,
-        "judge_ratings": {
-          "ysl-black-opium": 2,
-          "versace-eros": 0,
-          "kayali-vanilla-29": 1
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "ysl-black-opium": 3.0,
-          "versace-eros": 0.0,
-          "kayali-vanilla-29": 1.0
-        }
+        "diversity": 0.766,
+        "latency_s": 0.01
       },
       {
         "persona": "Tya — skin scent minimalis",
         "top": [
+          "ck-one",
           "the-body-shop-white-musk",
-          "mine-perfumery-morning-dew",
-          "ck-one"
+          "hmns-perfume-farhampton"
         ],
-        "ndcg@3": 1.0,
+        "ndcg@3": 0.835,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.664,
-        "latency_s": 3.45,
-        "judge_ratings": {
-          "the-body-shop-white-musk": 2,
-          "mine-perfumery-morning-dew": 1,
-          "ck-one": 1
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "the-body-shop-white-musk": 3.0,
-          "mine-perfumery-morning-dew": 2.0,
-          "ck-one": 2.0
-        }
+        "diversity": 0.777,
+        "latency_s": 0.0
       },
       {
         "persona": "Galih — oud leather gelap",
         "top": [
           "le-labo-santal-33",
-          "paco-rabanne-one-million",
-          "zara-vibrant-leather"
+          "zara-vibrant-leather",
+          "paco-rabanne-one-million"
         ],
-        "ndcg@3": 0.69,
+        "ndcg@3": 0.715,
         "hit@1": true,
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.851,
-        "latency_s": 3.89,
-        "judge_ratings": {
-          "le-labo-santal-33": 2,
-          "paco-rabanne-one-million": 0,
-          "zara-vibrant-leather": 1
-        },
-        "judge_mean": 1,
-        "label_gains": {
-          "le-labo-santal-33": 2.0,
-          "paco-rabanne-one-million": 1.0,
-          "zara-vibrant-leather": 2.0
-        }
+        "latency_s": 0.01
       },
       {
         "persona": "Putri — first date aman",
@@ -1476,67 +432,28 @@
         "avoid_violation": false,
         "budget_violation": false,
         "diversity": 0.781,
-        "latency_s": 3.07,
-        "judge_ratings": {
-          "saff-co-crimson": 2,
-          "onix-vanilla-groove": 2,
-          "the-body-shop-white-musk": 0
-        },
-        "judge_mean": 1.333,
-        "label_gains": {
-          "saff-co-crimson": 3.0,
-          "onix-vanilla-groove": 2.0,
-          "the-body-shop-white-musk": 1.0
-        }
+        "latency_s": 0.0
       },
       {
         "persona": "Haris — interview pertama",
         "top": [
+          "armaf-club-de-nuit-intense",
           "hmns-alpha",
-          "hmns-perfume-farhampton",
-          "mine-perfumery-morning-dew"
+          "zara-vibrant-leather"
         ],
-        "ndcg@3": 0.883,
-        "hit@1": true,
+        "ndcg@3": 0.413,
+        "hit@1": false,
         "avoid_violation": false,
         "budget_violation": false,
-        "diversity": 0.749,
-        "latency_s": 3.4,
-        "judge_ratings": {
-          "hmns-alpha": 2,
-          "hmns-perfume-farhampton": 2,
-          "mine-perfumery-morning-dew": 1
-        },
-        "judge_mean": 1.667,
-        "label_gains": {
-          "hmns-alpha": 2.0,
-          "hmns-perfume-farhampton": 2.0,
-          "mine-perfumery-morning-dew": 1.0
-        }
+        "diversity": 0.764,
+        "latency_s": 0.0
       }
     ],
-    "mean_ndcg@3": 0.852,
-    "hit@1_rate": 0.933,
+    "mean_ndcg@3": 0.788,
+    "hit@1_rate": 0.867,
     "avoid_violation_rate": 0.0,
     "budget_violation_rate": 0.0,
-    "mean_diversity": 0.716,
-    "mean_latency_s": 3.36,
-    "mean_judge": 1.222,
-    "judged_personas": 30
-  },
-  "significance": {
-    "mean_ndcg_delta": 0.073,
-    "p_value_sign_flip": 0.0137,
-    "ci95_bootstrap": [
-      0.02,
-      0.128
-    ],
-    "wins": 16,
-    "losses": 5,
-    "ties": 9
-  },
-  "judge_label_agreement": {
-    "pearson_r": 0.603,
-    "pairs": 180
+    "mean_diversity": 0.756,
+    "mean_latency_s": 0.0
   }
 }

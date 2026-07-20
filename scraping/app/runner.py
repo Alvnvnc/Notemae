@@ -85,7 +85,9 @@ async def submit_upsert(payload: dict[str, Any]) -> None:
 
 
 async def fetch_internal_fragrances(
-    missing_notes: bool = False, max_records: int = 5000
+    missing_notes: bool = False,
+    missing_pyramid: bool = False,
+    max_records: int = 5000,
 ) -> list[dict[str, Any]]:
     headers = {"X-Service-Key": settings.service_shared_secret}
     items: list[dict[str, Any]] = []
@@ -96,6 +98,7 @@ async def fetch_internal_fragrances(
                 f"{settings.backend_url}/internal/fragrances",
                 params={
                     "missing_notes": missing_notes,
+                    "missing_pyramid": missing_pyramid,
                     "limit": 500,
                     "offset": offset,
                 },
@@ -376,7 +379,10 @@ async def run_enrichment(job: IngestionJobResponse) -> None:
         try:
             if not settings.dashscope_api_key:
                 raise RuntimeError("DASHSCOPE_API_KEY is not configured")
-            sparse = await fetch_internal_fragrances(missing_notes=True)
+            # A record with no notes at all also has no pyramid, so this one
+            # filter covers both the never-enriched rows and the ones that
+            # were enriched before tiers existed.
+            sparse = await fetch_internal_fragrances(missing_pyramid=True)
             attempted = set(state.enriched_slugs)
             targets = [
                 record for record in sparse if record["slug"] not in attempted
@@ -399,6 +405,9 @@ async def run_enrichment(job: IngestionJobResponse) -> None:
                                 "gender",
                                 "release_year",
                                 "notes",
+                                "top_notes",
+                                "heart_notes",
+                                "base_notes",
                                 "occasions",
                                 "climates",
                                 "price_idr",
@@ -409,7 +418,11 @@ async def run_enrichment(job: IngestionJobResponse) -> None:
                                 "source_type",
                             )
                         }
-                        payload["notes"] = result["notes"]
+                        # Tiers only move together with the flat list they
+                        # summarize, so the two can never end up describing
+                        # different sets of notes.
+                        for key in ("notes", "top_notes", "heart_notes", "base_notes"):
+                            payload[key] = result[key]
                         if not payload["occasions"]:
                             payload["occasions"] = result["occasions"]
                         if not payload["climates"]:
