@@ -1,5 +1,5 @@
 /* Router History API dengan URL bersih (KNF-12): /, /katalog, /parfum/:slug,
-   /bandingkan/:a/vs/:b. nginx melayani fallback ke index.html (try_files).
+   /bandingkan/:a/vs/:b. server.js melayani fallback ke index.html.
    Setiap rute memperbarui <title> + meta description. */
 
 import { curtainSwap, killViewTriggers, revealWithin, scrollToTop, refreshTriggers, scrollToEl } from "./motion.js";

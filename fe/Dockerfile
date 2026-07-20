@@ -1,9 +1,16 @@
-FROM nginx:1.27-alpine
+FROM node:22-alpine
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY index.html app.css background.js runtime-env.js robots.txt sitemap.xml /usr/share/nginx/html/
-COPY vendor /usr/share/nginx/html/vendor
-COPY fonts /usr/share/nginx/html/fonts
-COPY js /usr/share/nginx/html/js
+WORKDIR /app
+ENV NODE_ENV=production PORT=4173
 
-EXPOSE 80
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY server.js index.html app.css background.js runtime-env.js robots.txt sitemap.xml ./
+COPY vendor ./vendor
+COPY fonts ./fonts
+COPY js ./js
+
+USER node
+EXPOSE 4173
+CMD ["node", "server.js"]

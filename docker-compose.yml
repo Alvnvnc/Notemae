@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: scent
       POSTGRES_PASSWORD: scent
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
@@ -26,9 +26,9 @@ services:
       DATABASE_URL: postgresql://scent:scent@postgres:5432/scentsphere
       AGENT_URL: http://agent:8001
       SERVICE_SHARED_SECRET: ${SERVICE_SHARED_SECRET:-change-me-before-production}
-      FRONTEND_ORIGINS: http://localhost:4173
+      FRONTEND_ORIGINS: ${FRONTEND_ORIGINS:-http://localhost:4173,https://notemae.pavernor.site}
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -46,7 +46,7 @@ services:
       QWEN_THINKING: ${QWEN_THINKING:-1}
       QWEN_RERANK_ENABLED: ${QWEN_RERANK_ENABLED:-1}
     ports:
-      - "8001:8001"
+      - "127.0.0.1:8001:8001"
 
   scraping:
     build: ./scraping
@@ -70,7 +70,7 @@ services:
       ENRICHMENT_MAX_RECORDS_PER_RUN: ${ENRICHMENT_MAX_RECORDS_PER_RUN:-60}
       ENRICHMENT_MIN_CONFIDENCE: ${ENRICHMENT_MIN_CONFIDENCE:-0.7}
     ports:
-      - "8002:8002"
+      - "127.0.0.1:8002:8002"
     depends_on:
       backend:
         condition: service_started
@@ -80,8 +80,10 @@ services:
   fe:
     build: ./fe
     restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8000
     ports:
-      - "4173:80"
+      - "127.0.0.1:4173:4173"
     depends_on:
       backend:
         condition: service_started

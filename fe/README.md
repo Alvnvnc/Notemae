@@ -1,9 +1,20 @@
 # Frontend - ScentSphere Dupe Guide
 
-SPA tanpa build-step (ES modules + nginx) untuk panduan dupe parfum, didesain
-dari `docs/Spesifikasi-Kebutuhan-Website-Parfum-Dupe.pdf`.
+SPA tanpa build-step (ES modules, disajikan server Node kecil) untuk panduan
+dupe parfum, didesain dari `docs/Spesifikasi-Kebutuhan-Website-Parfum-Dupe.pdf`.
 
-## Rute (History API, fallback nginx `try_files`)
+## Menjalankan
+
+```bash
+npm install
+npm run dev    # node --watch, http://localhost:4173, /v1 -> BACKEND_URL
+```
+
+`BACKEND_URL` default `http://127.0.0.1:8000` (port backend yang dipublish
+compose); di container di-set ke `http://backend:8000`. `npm start` menjalankan
+server yang sama tanpa watch — itu juga perintah yang dipakai image Docker.
+
+## Rute (History API, fallback ke `index.html` oleh `server.js`)
 
 - `/` beranda: hero, pasangan tersorot (KF-10), konsultan aroma
 - `/katalog` katalog + pencarian autocomplete + filter + pagination (KF-01..03, KF-09)
@@ -26,7 +37,7 @@ Motion punya dua mode: `body[data-motion="gsap"]` (orkestrasi penuh) dan
 dipakai saat `prefers-reduced-motion`). Konten tidak pernah disembunyikan
 permanen.
 
-`runtime-env.js` menentukan `backendUrl` ("" = same-origin; nginx mem-proxy
+`runtime-env.js` menentukan `backendUrl` ("" = same-origin; `server.js` mem-proxy
 `/v1/*` ke container backend). Jangan taruh secret apa pun di folder ini.
 
 `app.js.bak` adalah landing lama (satu halaman, harga USD) yang disimpan
