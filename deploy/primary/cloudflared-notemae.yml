@@ -1,0 +1,20 @@
+# Konfigurasi Cloudflare Tunnel untuk deployment utama (mesin WSL2 `ubuntu`).
+# File asli ada di ~/.cloudflared/notemae.yml. Ini snapshot untuk dokumentasi.
+#
+# Tunnel connect KELUAR dari mesin ini ke Cloudflare, jadi tak perlu IP publik,
+# port-forward, atau membuka firewall — cocok untuk WSL2 yang ter-NAT. Cloudflare
+# meng-terminate TLS di edge lalu meneruskan HTTP polos ke `service` di bawah,
+# yang menunjuk ke Caddy host di :80 (lihat deploy/primary/Caddyfile).
+#
+# `credentials-file` menunjuk ke JSON kredensial tunnel yang bersifat
+# machine-local dan TIDAK PERNAH di-commit (ada di ~/.cloudflared/, bukan repo).
+
+tunnel: 25168c96-a8c3-481c-801f-9a3d52fa0500
+credentials-file: /home/alvin/.cloudflared/25168c96-a8c3-481c-801f-9a3d52fa0500.json
+
+ingress:
+  - hostname: notemae.pavernor.site
+    service: http://localhost:80
+  - hostname: notemae-api.pavernor.site
+    service: http://localhost:80
+  - service: http_status:404

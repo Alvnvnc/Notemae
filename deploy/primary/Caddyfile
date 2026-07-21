@@ -1,0 +1,12 @@
+{
+	# TLS di-terminate di edge Cloudflare; Caddy cukup HTTP polos di :80
+	auto_https off
+}
+
+http://notemae.pavernor.site {
+	reverse_proxy 127.0.0.1:4173
+}
+
+http://notemae-api.pavernor.site {
+	reverse_proxy 127.0.0.1:8000
+}

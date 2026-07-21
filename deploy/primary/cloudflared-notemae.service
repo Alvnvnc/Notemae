@@ -1,0 +1,15 @@
+[Unit]
+Description=cloudflared Notemae tunnel (FE+BE via Caddy)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=notify
+User=alvin
+ExecStart=/usr/local/bin/cloudflared --no-autoupdate --config /home/alvin/.cloudflared/notemae.yml tunnel run
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

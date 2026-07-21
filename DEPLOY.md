@@ -1,101 +1,111 @@
-# Deploy Notemae ke VPS (notemae.pavernor.site)
+# Deploy Notemae
+
+Domain produksi: **https://notemae.pavernor.site** (API: `notemae-api.pavernor.site`).
 
 Seluruh aplikasi berjalan sebagai satu stack Docker Compose: Postgres/pgvector,
-Redis, `backend`, `agent`, `scraping`, dan `fe`. Hanya `fe` yang perlu terekspos
-ke publik — ia mem-proxy `/v1/*` ke `backend` di jaringan internal, jadi API dan
-database tak pernah punya port publik.
+Redis, `backend` (Go), `agent`, `scraping`, dan `fe`. Backend sudah full Go —
+lihat [backend/ARCHITECTURE.md](backend/ARCHITECTURE.md).
 
-## 1. Prasyarat di server
+---
 
-- Docker + Docker Compose plugin (`docker compose version`).
-- DNS: record **A** `notemae.pavernor.site` → IP server ini.
-- Firewall: port **80** dan **443** terbuka.
+## Deployment utama (mesin ini — WSL2 + Cloudflare Tunnel)
 
-## 2. Ambil kode
+Ini adalah tempat deploy utama. Arsitekturnya:
 
-```bash
-git clone <repo-url> notemae && cd notemae
-# atau, kalau sudah pernah:  cd notemae && git pull
+```
+Browser ──HTTPS──▶ Cloudflare (terminate TLS di edge)
+                        │  Cloudflare Tunnel (cloudflared, outbound)
+                        ▼
+   mesin WSL2 ── Caddy host :80 ──┬─▶ fe   :4173   (notemae.pavernor.site)
+   (systemd)                      └─▶ backend :8000 (notemae-api.pavernor.site)
+                                         │
+                                   Docker Compose stack (127.0.0.1)
 ```
 
-## 3. Siapkan secret (.env di server)
+Kunci: **Cloudflare Tunnel connect keluar** dari mesin ke Cloudflare, jadi tak
+perlu IP publik, port-forward Windows, atau membuka firewall — inilah yang
+membuatnya bisa publik meski berjalan di WSL2 yang ter-NAT. TLS diterminasi di
+Cloudflare, sehingga Caddy host cukup HTTP polos di `:80`.
 
-`.env` tidak ikut ke git. Buat dari contohnya lalu isi:
+### Komponen di host (semua systemd, sudah `enabled`)
 
-```bash
-cp .env.example .env
-```
+| Unit | Peran | Config |
+|---|---|---|
+| `docker` | Menjalankan stack compose (container `restart: unless-stopped`) | `docker-compose.yml` |
+| `caddy` | Reverse proxy host `:80` → `fe`/`backend` | `/etc/caddy/Caddyfile` (snapshot: [deploy/primary/Caddyfile](deploy/primary/Caddyfile)) |
+| `cloudflared-notemae` | Cloudflare Tunnel untuk domain notemae | `~/.cloudflared/notemae.yml` (snapshot: [deploy/primary/cloudflared-notemae.yml](deploy/primary/cloudflared-notemae.yml)) |
 
-Yang penting diisi untuk produksi:
+Snapshot config ada di [`deploy/primary/`](deploy/primary/) untuk dokumentasi/
+reproduksi. Kredensial tunnel (`~/.cloudflared/*.json`) bersifat machine-local
+dan tidak pernah di-commit.
+
+### Secret (`.env`, tidak ikut git)
+
+Yang penting untuk produksi:
 
 | Variabel | Kenapa |
 |---|---|
-| `LLM_API_KEY` (atau `DASHSCOPE_API_KEY`) | Parsing, embedding, rerank, penjelasan agen. Tanpa ini demo tetap jalan pakai fallback katalog deterministik. |
-| `SERVICE_SHARED_SECRET` | Ganti dari `change-me-before-production` — dipakai backend ↔ scraping. |
-| `FRONTEND_ORIGINS` | Sudah default menyertakan `https://notemae.pavernor.site`. Ubah kalau domainnya lain. |
+| `LLM_API_KEY` / `DASHSCOPE_API_KEY` | Parsing, embedding, rerank, penjelasan agen. Tanpa ini stack tetap jalan pakai fallback katalog deterministik. |
+| `SERVICE_SHARED_SECRET` | Kredensial internal backend ↔ scraping. **Sudah di-rotate** dari default; bukan `change-me-before-production`. |
+| `FRONTEND_ORIGINS` | Origin CORS yang diizinkan backend. Berisi `https://notemae.pavernor.site` (+ `http://localhost:4173` untuk uji lokal). |
 
-## 4. Jalankan
-
-Pilih **salah satu** sesuai kondisi server.
-
-### A. Server belum punya reverse proxy → pakai Caddy bawaan (TLS otomatis)
+### Menjalankan / update rilis
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.proxy.yml up --build -d
-```
-
-Caddy akan mengurus sertifikat Let's Encrypt sendiri begitu DNS sudah mengarah
-dan port 80/443 terbuka. Selesai — buka `https://notemae.pavernor.site`.
-
-### B. Server sudah punya nginx/caddy di host
-
-Jangan pakai overlay proxy. Cukup:
-
-```bash
-docker compose up --build -d
-```
-
-Lalu arahkan proxy host ke `fe` yang dipublish di `127.0.0.1:4173`. Contoh nginx:
-
-```nginx
-server {
-    server_name notemae.pavernor.site;
-    location / {
-        proxy_pass http://127.0.0.1:4173;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-# lalu: certbot --nginx -d notemae.pavernor.site
-```
-
-## 5. Verifikasi
-
-```bash
-docker compose ps                        # semua service Up / healthy
-curl -f http://127.0.0.1:4173/health     # -> ok
-```
-
-Buka domainnya di browser. Katalog kosong di awal itu wajar: `scraping`
-mengisi data secara berkala (`AUTO_INGEST_INTERVAL_SECONDS`). Untuk isi cepat,
-biarkan jalan atau turunkan interval sementara.
-
-## 6. Update rilis berikutnya
-
-```bash
+cd ~/Project/Notemae
 git pull
-docker compose -f docker-compose.yml -f docker-compose.proxy.yml up --build -d
-# (atau tanpa -f proxy kalau pakai jalur B)
+docker compose up -d --build            # rebuild image yang berubah, swap container
 ```
 
-Aset `fe` ber-hash isi + `Cache-Control: immutable`, sedangkan `index.html`,
-`runtime-env.js`, dan `background.js` dikirim `no-cache`, jadi deploy baru tidak
-mengendap di cache browser.
+`--build` mem-build ulang mis. `backend` dengan Dockerfile Go dan menukar
+container-nya; volume `postgres_data` tak tersentuh, jadi data tetap. Service
+host (caddy, cloudflared) tidak perlu disentuh untuk update aplikasi.
+
+### Verifikasi
+
+```bash
+docker compose ps                                   # semua Up / healthy
+curl -s -H 'Host: notemae.pavernor.site'     http://127.0.0.1/         # -> 200 (fe)
+curl -s -H 'Host: notemae-api.pavernor.site' http://127.0.0.1/health   # -> ok (backend)
+curl -sI https://notemae.pavernor.site/                                 # -> 200 (publik, via Cloudflare)
+```
+
+### Persistensi saat reboot
+
+Semua service host sudah `systemctl enable`-d dan WSL memakai `systemd=true`,
+jadi begitu distro WSL naik, docker + caddy + cloudflared ikut naik dan
+container `restart: unless-stopped` menyusul. **Satu hal yang perlu dipastikan
+di sisi Windows**: WSL2 tidak otomatis start saat Windows boot. Tambahkan Task
+Scheduler (saat logon/startup) yang memicu distro, mis. menjalankan:
+
+```
+wsl.exe -d ubuntu -u root -e true
+```
+
+Setelah distro terpicu, systemd menyalakan seluruh service tanpa perlu membuka
+terminal.
+
+---
+
+## Alternatif: server baru tanpa Cloudflare (Caddy + Let's Encrypt)
+
+Untuk men-deploy ke server lain yang **tidak** pakai Cloudflare, tersedia overlay
+reverse-proxy yang mengurus TLS sendiri via Let's Encrypt. Butuh DNS A-record ke
+IP server + port 80/443 terbuka.
+
+```bash
+cp .env.example .env    # lalu isi secret
+docker compose -f docker-compose.yml -f docker-compose.proxy.yml up --build -d
+```
+
+Overlay menambah satu service Caddy ([deploy/Caddyfile](deploy/Caddyfile)) yang
+memegang 80/443 dan meneruskan ke `fe`. Jangan pakai overlay ini di mesin yang
+sudah punya Caddy/nginx host (seperti deployment utama di atas) — akan bentrok
+di port 80.
 
 ## Catatan
 
-- `fe` mendengarkan `0.0.0.0:4173` di dalam container; Caddy/nginx menjangkaunya
-  lewat nama service `fe` (overlay) atau port publish `127.0.0.1:4173` (host proxy).
-- Hanya `fe` yang publik. Postgres (`127.0.0.1:5432`), `backend` (`:8000`),
-  `agent` (`:8001`), `scraping` (`:8002`) tetap terikat ke localhost server.
+- Hanya `fe` dan `backend` yang terjangkau publik (lewat Cloudflare Tunnel).
+  Postgres, Redis, dan `agent` tetap terikat ke localhost mesin.
+- Katalog kosong di awal itu wajar: `scraping` mengisi data berkala
+  (`AUTO_INGEST_INTERVAL_SECONDS`).
