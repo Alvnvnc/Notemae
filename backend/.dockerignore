@@ -1,0 +1,10 @@
+# Legacy Python backend (removed at cutover) and local cruft — the Go image
+# only needs go.mod/go.sum, cmd/, and internal/.
+app/
+**/__pycache__/
+*.pyc
+pyproject.toml
+uv.lock
+.git/
+README.md
+ARCHITECTURE.md

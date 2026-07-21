@@ -1,1 +1,0 @@
-"""ScentSphere catalog API."""
