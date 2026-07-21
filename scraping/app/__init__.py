@@ -1,1 +1,1 @@
-"""ScentSphere approved-source ingestion service."""
+"""Notemae approved-source ingestion service."""

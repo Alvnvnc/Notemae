@@ -81,7 +81,7 @@ services:
       OBF_BOOTSTRAP_FILES: ${OBF_BOOTSTRAP_FILES:-14}
       OBF_MAX_FILES_PER_RUN: ${OBF_MAX_FILES_PER_RUN:-2}
       OBF_MAX_RECORDS_PER_RUN: ${OBF_MAX_RECORDS_PER_RUN:-500}
-      SOURCE_USER_AGENT: ${SOURCE_USER_AGENT:-ScentSphere/0.1 (Open Beauty Facts ODbL delta importer)}
+      SOURCE_USER_AGENT: ${SOURCE_USER_AGENT:-Notemae/0.1 (Open Beauty Facts ODbL delta importer)}
       DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
       QWEN_BASE_URL: ${QWEN_BASE_URL:-https://dashscope-intl.aliyuncs.com/compatible-mode/v1}
       QWEN_MODEL: ${QWEN_MODEL:-qwen3.7-plus}

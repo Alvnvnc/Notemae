@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     auto_ingest_interval_seconds: int = Field(default=21600, ge=300)
     auto_ingest_retry_seconds: int = Field(default=300, ge=30)
     auto_ingest_startup_delay_seconds: int = Field(default=15, ge=0)
-    ingestion_state_path: str = "/tmp/scentsphere-ingestion-state.json"
+    ingestion_state_path: str = "/tmp/notemae-ingestion-state.json"
     obf_delta_index_url: str = "https://static.openbeautyfacts.org/data/delta/index.txt"
     obf_delta_base_url: str = "https://static.openbeautyfacts.org/data/delta"
     obf_bootstrap_files: int = Field(default=14, ge=1, le=14)
@@ -57,7 +57,7 @@ class Settings(BaseSettings):
             if query.strip()
         ]
 
-    source_user_agent: str = "ScentSphere/0.1 (Open Beauty Facts ODbL delta importer)"
+    source_user_agent: str = "Notemae/0.1 (Open Beauty Facts ODbL delta importer)"
 
 
 settings = Settings()
