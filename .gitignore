@@ -29,3 +29,10 @@ image.png
 
 # OS
 .DS_Store
+
+# Devpost submission assets (local only)
+docs/devpost/
+
+# Private keys & stray lockfiles (never commit)
+*.pem
+fe/package-lock.json
