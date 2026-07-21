@@ -20,7 +20,7 @@ type Config struct {
 // backend shipped with.
 func Load() Config {
 	return Config{
-		DatabaseURL:         env("DATABASE_URL", "postgresql://scent:scent@localhost:5432/scentsphere"),
+		DatabaseURL:         env("DATABASE_URL", "postgresql://scent:scent@localhost:5432/notemae"),
 		AgentURL:            env("AGENT_URL", "http://localhost:8001"),
 		ServiceSharedSecret: env("SERVICE_SHARED_SECRET", "change-me-before-production"),
 		FrontendOrigins:     env("FRONTEND_ORIGINS", "http://localhost:4173"),

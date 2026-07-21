@@ -3,7 +3,7 @@ services:
     image: pgvector/pgvector:pg16
     restart: unless-stopped
     environment:
-      POSTGRES_DB: scentsphere
+      POSTGRES_DB: notemae
       POSTGRES_USER: scent
       POSTGRES_PASSWORD: scent
     ports:
@@ -35,7 +35,7 @@ services:
     build: ./backend
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://scent:scent@postgres:5432/scentsphere
+      DATABASE_URL: postgresql://scent:scent@postgres:5432/notemae
       AGENT_URL: http://agent:8001
       SERVICE_SHARED_SECRET: ${SERVICE_SHARED_SECRET:-change-me-before-production}
       FRONTEND_ORIGINS: ${FRONTEND_ORIGINS:-http://localhost:4173,https://notemae.pavernor.site}
