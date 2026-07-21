@@ -28,7 +28,7 @@ type LegacyView = {
 export type LegacyLoader = (params: Record<string, string | undefined>) => Promise<LegacyView>;
 
 function applyMeta(view: LegacyView, pathname: string): void {
-  document.title = view.title ? `${view.title} | ScentSphere` : "ScentSphere | Perfume Dupe Guide";
+  document.title = view.title ? `${view.title} | Notemae` : "Notemae | Perfume Dupe Guide";
   const meta = document.querySelector('meta[name="description"]');
   if (meta && view.desc) meta.setAttribute("content", view.desc);
   const link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');

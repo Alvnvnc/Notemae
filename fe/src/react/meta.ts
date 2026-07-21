@@ -7,7 +7,7 @@ import { useLocation } from "react-router";
 export function useRouteMeta({ title, desc, stage }: { title?: string; desc?: string; stage?: boolean }): void {
   const { pathname } = useLocation();
   useEffect(() => {
-    document.title = title ? `${title} | ScentSphere` : "ScentSphere | Perfume Dupe Guide";
+    document.title = title ? `${title} | Notemae` : "Notemae | Perfume Dupe Guide";
     if (desc) document.querySelector('meta[name="description"]')?.setAttribute("content", desc);
     const link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (link) { try { link.setAttribute("href", new URL(pathname, link.href).href); } catch { /* biarkan */ } }

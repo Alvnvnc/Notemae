@@ -19,7 +19,7 @@ const FallbackSentinel = "␞catalog_fallback"
 // DupeDisclaimer is attached to every relationship response.
 const DupeDisclaimer = "Dupe/clone relationships come from community-consensus curation, not official " +
 	"brand statements. The 'similar' list only indicates a comparable scent profile, " +
-	"not a dupe claim. ScentSphere does not verify the authenticity (genuine/fake) of " +
+	"not a dupe claim. Notemae does not verify the authenticity (genuine/fake) of " +
 	"physical products; be wary of offers priced far below market."
 
 // profileQueryText builds the semantic-search text from a structured profile.

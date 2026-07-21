@@ -19,8 +19,8 @@ export function Masthead({ onSearch }: { onSearch: () => void }) {
   const locale = useLocale();
   return (
     <header className="masthead" id="masthead">
-      <Link className="wordmark" to="/" aria-label="ScentSphere, home">
-        ScentSphere<em>dupe guide</em>
+      <Link className="wordmark" to="/" aria-label="Notemae, home">
+        Notemae<em>dupe guide</em>
       </Link>
       <nav className="masthead__nav" aria-label="Main navigation">
         <NavLink className="nav-link" to="/katalog">{t("nav.catalog")}</NavLink>

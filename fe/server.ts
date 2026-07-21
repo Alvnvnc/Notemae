@@ -146,7 +146,7 @@ function safeJson(value: unknown): string {
    klien = hidrasi bersih). data-loading dilepas - konten sudah ada, tirai tak
    perlu jalan. title/desc/canonical/data-stage disetel seperti dulu. */
 function injectSsr(shell: string, result: SsrResult, pathname: string): string {
-  const fullTitle = result.title ? `${result.title} | ScentSphere` : "ScentSphere | Perfume Dupe Guide";
+  const fullTitle = result.title ? `${result.title} | Notemae` : "Notemae | Perfume Dupe Guide";
   const boot =
     `<script>window.__staticRouterHydrationData=${safeJson(result.hydrationData)};` +
     `window.__SSR_LOCALE__=${safeJson(result.locale)};</script>`;

@@ -85,7 +85,7 @@ INSERT INTO fragrances (
         ARRAY['neroli', 'iris', 'amber', 'cedar'],
         ARRAY['neroli'], ARRAY['iris'], ARRAY['amber', 'cedar'],
         ARRAY['office', 'interview', 'formal'], ARRAY['tropical', 'warm', 'mild'],
-        1850000, 4.4, 4.0, 3.0, 'https://example.com/datasets/scent-demo', 'public_dataset'
+        1850000, 4.4, 4.0, 3.0, 'https://notemae.pavernor.site/datasets/scent-demo', 'public_dataset'
     ),
     (
         'bleu-de-chanel-edp', 'Chanel', 'Bleu de Chanel Eau de Parfum',
@@ -93,7 +93,7 @@ INSERT INTO fragrances (
         ARRAY['citrus', 'incense', 'cedar', 'amber'],
         ARRAY['citrus'], ARRAY['incense'], ARRAY['cedar', 'amber'],
         ARRAY['office', 'date', 'formal'], ARRAY['tropical', 'warm', 'mild'],
-        2450000, 4.6, 4.3, 3.6, 'https://example.com/datasets/scent-demo', 'public_dataset'
+        2450000, 4.6, 4.3, 3.6, 'https://notemae.pavernor.site/datasets/scent-demo', 'public_dataset'
     ),
     (
         'versace-pour-homme', 'Versace', 'Pour Homme',
@@ -101,7 +101,7 @@ INSERT INTO fragrances (
         ARRAY['citrus', 'neroli', 'cedar', 'musk'],
         ARRAY['citrus', 'neroli'], ARRAY['cedar'], ARRAY['musk'],
         ARRAY['office', 'gym', 'casual'], ARRAY['tropical', 'hot'],
-        1050000, 4.2, 3.2, 2.8, 'https://example.com/datasets/scent-demo', 'public_dataset'
+        1050000, 4.2, 3.2, 2.8, 'https://notemae.pavernor.site/datasets/scent-demo', 'public_dataset'
     ),
     (
         'dior-sauvage-edt', 'Dior', 'Sauvage Eau de Toilette',
@@ -109,6 +109,6 @@ INSERT INTO fragrances (
         ARRAY['bergamot', 'pepper', 'lavender', 'ambroxan'],
         ARRAY['bergamot', 'pepper'], ARRAY['lavender'], ARRAY['ambroxan'],
         ARRAY['date', 'party', 'casual'], ARRAY['tropical', 'warm'],
-        1950000, 4.3, 4.1, 4.2, 'https://example.com/datasets/scent-demo', 'public_dataset'
+        1950000, 4.3, 4.1, 4.2, 'https://notemae.pavernor.site/datasets/scent-demo', 'public_dataset'
     )
 ON CONFLICT (slug) DO NOTHING;

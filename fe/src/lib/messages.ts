@@ -62,7 +62,7 @@ export const EN = {
   "role.alternative": "Alternative",
 
   "common.skip": "Skip to content",
-  "common.loading": "Loading ScentSphere",
+  "common.loading": "Loading Notemae",
   "common.loadingTag": "Perfume dupe index",
   "common.notes": "Notes",
   "common.noNotes": "Notes not recorded",
@@ -239,7 +239,7 @@ export const ID = {
   "role.alternative": "Alternatif",
 
   "common.skip": "Langsung ke konten",
-  "common.loading": "Memuat ScentSphere",
+  "common.loading": "Memuat Notemae",
   "common.loadingTag": "Indeks dupe parfum",
   "common.notes": "Notes",
   "common.noNotes": "Notes belum tercatat",

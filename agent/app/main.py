@@ -45,7 +45,7 @@ from .prompts import (
 
 
 logger = logging.getLogger(__name__)
-app = FastAPI(title="ScentSphere Qwen Agent API", version="0.3.0")
+app = FastAPI(title="Notemae Qwen Agent API", version="0.3.0")
 
 NOTE_VOCABULARY = {
     "amber",

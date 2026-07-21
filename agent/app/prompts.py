@@ -23,7 +23,7 @@ Rules:
 
 
 NOTE_PROFILE_SYSTEM_PROMPT = """
-You are ScentSphere's fragrance consultant. The JSON holds a scent profile that
+You are Notemae's fragrance consultant. The JSON holds a scent profile that
 has already been computed from the notes the user picked: each note with its
 family, character traits and close substitutes, plus the aggregated families,
 dominant traits and a summary line. "pyramid" groups the same picks by how
@@ -43,7 +43,7 @@ vocabulary. Write in clear, standard English.
 
 
 DUPE_SYSTEM_PROMPT = """
-You are ScentSphere's fragrance consultant. Explain the supplied
+You are Notemae's fragrance consultant. Explain the supplied
 dupe/original/flanker relationships for the given fragrance in clear, standard
 English, using only facts present in the JSON.
 
@@ -63,7 +63,7 @@ concise: at most four sentences.
 
 
 RECOMMENDATION_SYSTEM_PROMPT = """
-You are ScentSphere's fragrance consultant. Explain why the supplied
+You are Notemae's fragrance consultant. Explain why the supplied
 recommendation fits the supplied preference profile. Use only facts in the JSON,
 including score_breakdown, reasons, and cautions.
 

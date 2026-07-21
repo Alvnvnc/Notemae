@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="colophon" id="colophon">
       <div className="colophon__grid">
         <div className="colophon__brand">
-          <span className="wordmark wordmark--foot">ScentSphere<em>dupe guide</em></span>
+          <span className="wordmark wordmark--foot">Notemae<em>dupe guide</em></span>
           <p>{t("footer.description")}</p>
         </div>
         <nav className="colophon__nav" aria-label={t("footer.description")}>

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ScentSphere AI — interactive WebGL flow background
+   Notemae — interactive WebGL flow background
    Procedural domain-warped noise distorted by pointer velocity.
    No external media assets; degrades to the CSS poster when WebGL is absent.
    Public API: window.ScentBG.setFamily(a, b) | .setPaused(bool) | .isActive()

@@ -50,7 +50,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="ScentSphere Ingestion API",
+    title="Notemae Ingestion API",
     version="0.2.0",
     lifespan=lifespan,
 )

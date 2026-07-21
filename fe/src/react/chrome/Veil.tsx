@@ -122,7 +122,7 @@ export function Veil() {
       <i className="veil__panel veil__panel--top" aria-hidden="true"></i>
       <i className="veil__panel veil__panel--bot" aria-hidden="true"></i>
       <div className="veil__inner">
-        <p className="veil__mark" id="veil-mark" aria-hidden="true" ref={markRef}>ScentSphere</p>
+        <p className="veil__mark" id="veil-mark" aria-hidden="true" ref={markRef}>Notemae</p>
         <p className="veil__tag">{t("common.loadingTag")}</p>
       </div>
       <div className="veil__meter" aria-hidden="true">
