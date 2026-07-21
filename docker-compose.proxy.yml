@@ -1,0 +1,28 @@
+# Overlay reverse-proxy — OPSIONAL, tidak menyentuh docker-compose.yml.
+#
+# Pakai ini HANYA kalau server belum punya reverse proxy sendiri. Ia menambah
+# satu service Caddy yang memegang port 80/443 publik dan meneruskan ke `fe`
+# lewat DNS internal compose (`fe:4173`).
+#
+#   docker compose -f docker-compose.yml -f docker-compose.proxy.yml up --build -d
+#
+# Kalau server SUDAH punya nginx/caddy di host, JANGAN pakai file ini. Cukup
+# arahkan proxy host itu ke 127.0.0.1:4173 (port yang sudah dipublish `fe`).
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - fe
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,20 @@
+# Reverse proxy + TLS otomatis untuk Notemae.
+#
+# Caddy meminta sertifikat Let's Encrypt sendiri untuk domain di bawah, lalu
+# meneruskan seluruh trafik ke service `fe` (Node SSR) di jaringan internal
+# compose. Hanya `fe` yang perlu terjangkau: ia sudah mem-proxy /v1/* ke
+# `backend` di dalam jaringan, jadi backend tak pernah terekspos publik.
+#
+# Prasyarat: DNS A/AAAA `notemae.pavernor.site` mengarah ke IP server ini, dan
+# port 80 + 443 terbuka di firewall.
+
+notemae.pavernor.site {
+	encode zstd gzip
+	reverse_proxy fe:4173
+}
+
+# Uji lokal tanpa domain/TLS (opsional): buka http://SERVER_IP:8080
+# Hapus komentar blok ini kalau perlu.
+# :8080 {
+# 	reverse_proxy fe:4173
+# }
